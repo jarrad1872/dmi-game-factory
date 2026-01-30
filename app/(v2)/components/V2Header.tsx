@@ -6,9 +6,9 @@ export default function V2Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { href: '/v2', label: 'Home' },
-    { href: '/v2/templates', label: 'Templates' },
-    { href: '/v2/create', label: 'Create Game' },
+    { href: '/', label: 'Home' },
+    { href: '//templates', label: 'Templates' },
+    { href: '//create', label: 'Create Game' },
   ];
 
   return (
@@ -16,7 +16,7 @@ export default function V2Header() {
       <div className="container-dmi">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <a href="/v2" className="flex items-center gap-3">
+          <a href="/" className="flex items-center gap-3">
             <img
               src="https://dmitools.com/cdn/shop/files/dmi_800x470.png?v=1613785694"
               alt="DMI Tools"
@@ -54,7 +54,7 @@ export default function V2Header() {
 
             {/* Create Button - Desktop */}
             <a
-              href="/v2/create"
+              href="//create"
               className="btn-dmi-primary hidden sm:inline-block text-sm"
             >
               Create Game
@@ -108,7 +108,7 @@ export default function V2Header() {
               ))}
               <div className="mt-4 px-4">
                 <a
-                  href="/v2/create"
+                  href="//create"
                   className="btn-dmi-primary block text-center"
                 >
                   Create Game
