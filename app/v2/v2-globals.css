@@ -1,0 +1,260 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* DMI Brand Colors */
+  --dmi-red: #A62022;
+  --dmi-red-rgb: 166, 32, 34;
+  --dmi-black: #222222;
+  --dmi-black-rgb: 34, 34, 34;
+  --dmi-white: #FFFFFF;
+  --dmi-gray: #EDEDED;
+  --dmi-gray-rgb: 237, 237, 237;
+  --dmi-pure-black: #000000;
+
+  /* Font Families */
+  --font-display: var(--font-fraunces), serif;
+  --font-body: var(--font-halant), serif;
+  --font-ui: var(--font-open-sans), sans-serif;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--dmi-black);
+  background-color: var(--dmi-white);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* Typography */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.font-ui {
+  font-family: var(--font-ui);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--dmi-black);
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-family: var(--font-ui);
+}
+
+/* Primary Button Style */
+.btn-dmi-primary {
+  font-family: var(--font-ui);
+  background-color: var(--dmi-red);
+  color: var(--dmi-white);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  transition: all 0.2s ease;
+  border: 2px solid var(--dmi-red);
+  cursor: pointer;
+}
+
+.btn-dmi-primary:hover {
+  background-color: var(--dmi-white);
+  color: var(--dmi-red);
+}
+
+.btn-dmi-primary:active {
+  transform: translateY(1px);
+}
+
+/* Secondary Button Style */
+.btn-dmi-secondary {
+  font-family: var(--font-ui);
+  background-color: transparent;
+  color: var(--dmi-black);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  transition: all 0.2s ease;
+  border: 2px solid var(--dmi-black);
+  cursor: pointer;
+}
+
+.btn-dmi-secondary:hover {
+  background-color: var(--dmi-black);
+  color: var(--dmi-white);
+}
+
+/* Made in USA Badge */
+.badge-made-in-usa {
+  font-family: var(--font-ui);
+  background: linear-gradient(135deg, #B22234 0%, #B22234 50%, #FFFFFF 50%, #FFFFFF 100%);
+  background-size: 200% 100%;
+  color: var(--dmi-white);
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid #B22234;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Card Styles */
+.card-dmi {
+  background-color: var(--dmi-white);
+  border: 1px solid var(--dmi-gray);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.card-dmi:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-color: var(--dmi-red);
+}
+
+/* Section Backgrounds */
+.bg-dmi-white {
+  background-color: var(--dmi-white);
+}
+
+.bg-dmi-gray {
+  background-color: var(--dmi-gray);
+}
+
+.bg-dmi-black {
+  background-color: var(--dmi-black);
+  color: var(--dmi-white);
+}
+
+.bg-dmi-red {
+  background-color: var(--dmi-red);
+  color: var(--dmi-white);
+}
+
+/* Text Colors */
+.text-dmi-red {
+  color: var(--dmi-red);
+}
+
+.text-dmi-black {
+  color: var(--dmi-black);
+}
+
+.text-dmi-gray {
+  color: #666666;
+}
+
+/* Industrial accents */
+.border-industrial {
+  border-left: 4px solid var(--dmi-red);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dmi-gray);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--dmi-red);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8a1a1c;
+}
+
+/* Selection */
+::selection {
+  background: rgba(166, 32, 34, 0.2);
+  color: var(--dmi-black);
+}
+
+/* Input focus states */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--dmi-red);
+  box-shadow: 0 0 0 3px rgba(166, 32, 34, 0.15);
+}
+
+/* Focus visible for accessibility */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--dmi-red);
+  outline-offset: 2px;
+}
+
+/* Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out;
+}
+
+/* Container */
+.container-dmi {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .container-dmi {
+    padding: 0 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-dmi {
+    padding: 0 3rem;
+  }
+}
