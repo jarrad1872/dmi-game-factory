@@ -3,7 +3,7 @@
 import { GameTemplate } from '@/lib/types';
 
 interface TemplateSelectorProps {
-  selected: GameTemplate;
+  selected: GameTemplate | string;
   onSelect: (template: GameTemplate) => void;
 }
 
