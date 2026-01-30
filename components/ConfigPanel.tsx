@@ -8,12 +8,14 @@ interface ConfigPanelProps {
   onChange: (updates: Partial<GameConfig>) => void;
 }
 
-const THEMES: { id: GameTheme; name: string; colors: string }[] = [
-  { id: 'industrial', name: 'Industrial', colors: 'from-orange-500 to-blue-400' },
-  { id: 'construction', name: 'Construction', colors: 'from-orange-400 to-yellow-400' },
-  { id: 'tech', name: 'Tech', colors: 'from-cyan-400 to-purple-500' },
-  { id: 'nature', name: 'Nature', colors: 'from-green-500 to-lime-400' },
+const THEMES: { id: GameTheme; name: string; colors: string; description: string }[] = [
+  { id: 'industrial', name: 'Industrial', colors: 'from-orange-500 to-blue-400', description: 'DMI signature' },
+  { id: 'construction', name: 'Construction', colors: 'from-orange-400 to-yellow-400', description: 'Job site vibes' },
+  { id: 'tech', name: 'Tech', colors: 'from-cyan-400 to-purple-500', description: 'Modern & sleek' },
+  { id: 'nature', name: 'Nature', colors: 'from-green-500 to-lime-400', description: 'Eco-friendly' },
 ];
+
+const DIFFICULTY_LABELS = ['Easy', 'Casual', 'Normal', 'Challenging', 'Hard', 'Expert', 'Intense', 'Brutal', 'Insane', 'Impossible'];
 
 export default function ConfigPanel({ config, onChange }: ConfigPanelProps) {
   const toggleProduct = (productId: string) => {
@@ -24,12 +26,15 @@ export default function ConfigPanel({ config, onChange }: ConfigPanelProps) {
   };
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-5 space-y-8">
       {/* Template Selection */}
       <section>
-        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
-          Game Template
-        </h3>
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-lg">🎮</span>
+          <h3 className="text-sm font-bold text-white uppercase tracking-wide">
+            Game Type
+          </h3>
+        </div>
         <TemplateSelector
           selected={config.template}
           onSelect={(template) => onChange({ template })}
@@ -38,36 +43,43 @@ export default function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 
       {/* Game Title */}
       <section>
-        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
-          Game Title
-        </h3>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-lg">✏️</span>
+          <h3 className="text-sm font-bold text-white uppercase tracking-wide">
+            Game Title
+          </h3>
+        </div>
         <input
           type="text"
           value={config.title}
           onChange={(e) => onChange({ title: e.target.value })}
-          className="w-full px-3 py-2 bg-dmi-darker border border-gray-700 rounded-lg focus:outline-none focus:border-dmi-orange transition-colors text-sm"
+          className="w-full px-4 py-3 bg-dmi-darker border border-gray-700 rounded-xl focus:outline-none focus:border-dmi-orange transition-all text-sm"
           placeholder="Enter game title"
         />
       </section>
 
       {/* Theme */}
       <section>
-        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
-          Theme
-        </h3>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-lg">🎨</span>
+          <h3 className="text-sm font-bold text-white uppercase tracking-wide">
+            Visual Theme
+          </h3>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
           {THEMES.map((theme) => (
             <button
               key={theme.id}
               onClick={() => onChange({ theme: theme.id })}
-              className={`p-3 rounded-lg border-2 transition-all ${
+              className={`p-4 rounded-xl border-2 transition-all text-left ${
                 config.theme === theme.id
-                  ? 'border-dmi-orange bg-dmi-orange/10'
-                  : 'border-gray-700 hover:border-gray-600'
+                  ? 'border-dmi-orange bg-dmi-orange/10 shadow-lg shadow-orange-500/10'
+                  : 'border-gray-700/50 hover:border-gray-600 bg-gray-800/30'
               }`}
             >
-              <div className={`w-full h-3 rounded bg-gradient-to-r ${theme.colors} mb-2`} />
-              <span className="text-xs">{theme.name}</span>
+              <div className={`w-full h-4 rounded-full bg-gradient-to-r ${theme.colors} mb-3 shadow-md`} />
+              <div className="font-semibold text-sm">{theme.name}</div>
+              <div className="text-xs text-gray-500">{theme.description}</div>
             </button>
           ))}
         </div>
@@ -75,17 +87,21 @@ export default function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 
       {/* DMI Products */}
       <section>
-        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
-          Featured Products
-        </h3>
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-lg">⚙️</span>
+          <h3 className="text-sm font-bold text-white uppercase tracking-wide">
+            Featured Products
+          </h3>
+        </div>
+        <p className="text-xs text-gray-500 mb-3">Select products to feature in your game</p>
         <div className="space-y-2">
           {DMI_PRODUCTS.map((product) => (
             <label
               key={product.id}
-              className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+              className={`flex items-center gap-4 p-4 rounded-xl cursor-pointer transition-all ${
                 config.products.includes(product.id)
-                  ? 'bg-dmi-orange/20 border border-dmi-orange/50'
-                  : 'bg-gray-800/50 border border-transparent hover:border-gray-700'
+                  ? 'bg-gradient-to-r from-dmi-orange/20 to-dmi-orange/5 border border-dmi-orange/40 shadow-lg shadow-orange-500/5'
+                  : 'bg-gray-800/40 border border-gray-700/30 hover:border-gray-600/50 hover:bg-gray-800/60'
               }`}
             >
               <input
@@ -94,11 +110,21 @@ export default function ConfigPanel({ config, onChange }: ConfigPanelProps) {
                 onChange={() => toggleProduct(product.id)}
                 className="sr-only"
               />
-              <span className="text-xl">{product.icon}</span>
-              <span className="text-sm">{product.name}</span>
-              {config.products.includes(product.id) && (
-                <span className="ml-auto text-dmi-orange">✓</span>
-              )}
+              <span className="text-2xl">{product.icon}</span>
+              <div className="flex-1">
+                <div className="font-medium text-sm">{product.name}</div>
+              </div>
+              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
+                config.products.includes(product.id)
+                  ? 'border-dmi-orange bg-dmi-orange text-white'
+                  : 'border-gray-600'
+              }`}>
+                {config.products.includes(product.id) && (
+                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                )}
+              </div>
             </label>
           ))}
         </div>
@@ -106,59 +132,90 @@ export default function ConfigPanel({ config, onChange }: ConfigPanelProps) {
 
       {/* CTA */}
       <section>
-        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
-          Call to Action
-        </h3>
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-lg">🔗</span>
+          <h3 className="text-sm font-bold text-white uppercase tracking-wide">
+            Call to Action
+          </h3>
+        </div>
         <div className="space-y-3">
-          <input
-            type="text"
-            value={config.ctaText}
-            onChange={(e) => onChange({ ctaText: e.target.value })}
-            className="w-full px-3 py-2 bg-dmi-darker border border-gray-700 rounded-lg focus:outline-none focus:border-dmi-orange transition-colors text-sm"
-            placeholder="Button text"
-          />
-          <input
-            type="url"
-            value={config.ctaUrl}
-            onChange={(e) => onChange({ ctaUrl: e.target.value })}
-            className="w-full px-3 py-2 bg-dmi-darker border border-gray-700 rounded-lg focus:outline-none focus:border-dmi-orange transition-colors text-sm"
-            placeholder="https://dmitools.com"
-          />
+          <div>
+            <label className="text-xs text-gray-500 mb-1.5 block">Button Text</label>
+            <input
+              type="text"
+              value={config.ctaText}
+              onChange={(e) => onChange({ ctaText: e.target.value })}
+              className="w-full px-4 py-3 bg-dmi-darker border border-gray-700 rounded-xl focus:outline-none focus:border-dmi-orange transition-all text-sm"
+              placeholder="Shop DMI Tools"
+            />
+          </div>
+          <div>
+            <label className="text-xs text-gray-500 mb-1.5 block">Link URL</label>
+            <input
+              type="url"
+              value={config.ctaUrl}
+              onChange={(e) => onChange({ ctaUrl: e.target.value })}
+              className="w-full px-4 py-3 bg-dmi-darker border border-gray-700 rounded-xl focus:outline-none focus:border-dmi-orange transition-all text-sm"
+              placeholder="https://dmitools.com"
+            />
+          </div>
         </div>
       </section>
 
       {/* Difficulty */}
       <section>
-        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
-          Difficulty: {config.difficulty}/10
-        </h3>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">💪</span>
+            <h3 className="text-sm font-bold text-white uppercase tracking-wide">
+              Difficulty
+            </h3>
+          </div>
+          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+            config.difficulty <= 3 ? 'bg-green-500/20 text-green-400' :
+            config.difficulty <= 6 ? 'bg-yellow-500/20 text-yellow-400' :
+            'bg-red-500/20 text-red-400'
+          }`}>
+            {DIFFICULTY_LABELS[config.difficulty - 1]}
+          </span>
+        </div>
         <input
           type="range"
           min="1"
           max="10"
           value={config.difficulty}
           onChange={(e) => onChange({ difficulty: parseInt(e.target.value) })}
-          className="w-full accent-dmi-orange"
+          className="w-full"
         />
-        <div className="flex justify-between text-xs text-gray-500 mt-1">
+        <div className="flex justify-between text-xs text-gray-600 mt-2">
           <span>Easy</span>
+          <span>Normal</span>
           <span>Hard</span>
         </div>
       </section>
 
       {/* Branding Toggle */}
       <section>
-        <label className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg cursor-pointer">
-          <span className="text-sm">Show DMI Branding</span>
+        <label className="flex items-center justify-between p-4 bg-gray-800/40 hover:bg-gray-800/60 rounded-xl cursor-pointer transition-colors border border-gray-700/30">
+          <div className="flex items-center gap-3">
+            <span className="text-lg">🏷️</span>
+            <div>
+              <div className="font-medium text-sm">DMI Branding</div>
+              <div className="text-xs text-gray-500">Show logo in game</div>
+            </div>
+          </div>
           <div
-            className={`w-11 h-6 rounded-full transition-colors ${
+            className={`relative w-14 h-8 rounded-full transition-colors ${
               config.showBranding ? 'bg-dmi-orange' : 'bg-gray-600'
             }`}
-            onClick={() => onChange({ showBranding: !config.showBranding })}
+            onClick={(e) => {
+              e.preventDefault();
+              onChange({ showBranding: !config.showBranding });
+            }}
           >
             <div
-              className={`w-5 h-5 rounded-full bg-white shadow transform transition-transform mt-0.5 ${
-                config.showBranding ? 'translate-x-5' : 'translate-x-0.5'
+              className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow-md transform transition-transform ${
+                config.showBranding ? 'translate-x-7' : 'translate-x-1'
               }`}
             />
           </div>

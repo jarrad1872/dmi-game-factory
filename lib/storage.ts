@@ -1,6 +1,6 @@
 'use client';
 
-import { GameBuild, GameConfig, DEFAULT_CONFIG } from './types';
+import { GameBuild, GameConfig, GameTemplate, DEFAULT_CONFIG } from './types';
 import { v4 as uuidv4 } from 'uuid';
 
 const STORAGE_KEY = 'dmi-game-factory-builds';
@@ -21,11 +21,15 @@ export function saveBuilds(builds: GameBuild[]): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(builds));
 }
 
-export function createBuild(name: string, config?: Partial<GameConfig>): GameBuild {
+export function createBuild(name: string, config?: Partial<GameConfig>, template?: GameTemplate): GameBuild {
   const build: GameBuild = {
     id: uuidv4(),
     name,
-    config: { ...DEFAULT_CONFIG, ...config },
+    config: { 
+      ...DEFAULT_CONFIG, 
+      ...config,
+      ...(template ? { template } : {})
+    },
     status: 'draft',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
