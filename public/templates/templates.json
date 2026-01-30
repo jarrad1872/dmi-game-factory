@@ -1,0 +1,45 @@
+{
+  "templates": [
+    {
+      "id": "flappy",
+      "name": "Flappy Bird",
+      "description": "Tap to fly, avoid obstacles, collect stars",
+      "icon": "🐦",
+      "difficulty": "Easy",
+      "category": "arcade",
+      "features": ["Touch controls", "Score system", "Local highscore"]
+    },
+    {
+      "id": "runner",
+      "name": "Endless Runner",
+      "description": "Jump over obstacles, collect coins",
+      "icon": "🏃",
+      "difficulty": "Easy",
+      "category": "arcade",
+      "features": ["Auto-run", "Jump mechanics", "Distance tracking"]
+    },
+    {
+      "id": "match3",
+      "name": "Match 3 Puzzle",
+      "description": "Swap tiles to match 3 or more",
+      "icon": "💎",
+      "difficulty": "Medium",
+      "category": "puzzle",
+      "features": ["Grid-based", "Combo system", "Move limit"]
+    },
+    {
+      "id": "blank",
+      "name": "Blank Canvas",
+      "description": "Start from scratch with AI assistance",
+      "icon": "✨",
+      "difficulty": "Custom",
+      "category": "custom",
+      "features": ["Full control", "AI-powered", "No template code"]
+    }
+  ],
+  "categories": [
+    { "id": "arcade", "name": "Arcade Games", "icon": "🎮" },
+    { "id": "puzzle", "name": "Puzzle Games", "icon": "🧩" },
+    { "id": "custom", "name": "Custom", "icon": "✨" }
+  ]
+}

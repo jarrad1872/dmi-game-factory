@@ -5,6 +5,7 @@ import { GameConfig } from '@/lib/types';
 
 interface PreviewPaneProps {
   config: GameConfig;
+  customCode?: string;
 }
 
 type ViewMode = 'mobile' | 'desktop';
@@ -15,7 +16,7 @@ const TEMPLATE_INSTRUCTIONS: Record<string, string> = {
   match3: '👆 Tap adjacent tiles to swap • Match 3 or more • Clear the board',
 };
 
-export default function PreviewPane({ config }: PreviewPaneProps) {
+export default function PreviewPane({ config, customCode }: PreviewPaneProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('mobile');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,27 +36,37 @@ export default function PreviewPane({ config }: PreviewPaneProps) {
       setError(null);
       
       try {
-        const res = await fetch('/api/preview', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(config),
-        });
+        let html: string;
         
-        if (res.ok) {
-          const html = await res.text();
-          const blob = new Blob([html], { type: 'text/html' });
-          const url = URL.createObjectURL(blob);
+        // Use custom code if provided, otherwise fetch from API
+        if (customCode) {
+          html = customCode;
+        } else {
+          const res = await fetch('/api/preview', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(config),
+          });
           
-          // Cleanup old URL
-          if (previewUrl) {
-            URL.revokeObjectURL(previewUrl);
+          if (!res.ok) {
+            setError('Failed to generate preview');
+            setLoading(false);
+            return;
           }
           
-          setPreviewUrl(url);
-          setIsPlaying(false);
-        } else {
-          setError('Failed to generate preview');
+          html = await res.text();
         }
+        
+        const blob = new Blob([html], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        
+        // Cleanup old URL
+        if (previewUrl) {
+          URL.revokeObjectURL(previewUrl);
+        }
+        
+        setPreviewUrl(url);
+        setIsPlaying(false);
       } catch (err) {
         console.error('Preview generation failed:', err);
         setError('Preview generation failed');
@@ -69,7 +80,7 @@ export default function PreviewPane({ config }: PreviewPaneProps) {
         clearTimeout(debounceRef.current);
       }
     };
-  }, [config]);
+  }, [config, customCode]);
 
   // Cleanup on unmount
   useEffect(() => {

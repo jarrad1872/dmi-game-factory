@@ -6,6 +6,7 @@ import { GameTemplate } from '@/lib/types';
 interface CreateBuildModalProps {
   onClose: () => void;
   onCreate: (name: string, template?: GameTemplate) => void;
+  defaultTemplate?: GameTemplate;
 }
 
 const TEMPLATES: { id: GameTemplate; name: string; icon: string; description: string }[] = [
@@ -14,9 +15,9 @@ const TEMPLATES: { id: GameTemplate; name: string; icon: string; description: st
   { id: 'match3', name: 'Match-3 Puzzle', icon: '💎', description: 'Swap tiles' },
 ];
 
-export default function CreateBuildModal({ onClose, onCreate }: CreateBuildModalProps) {
+export default function CreateBuildModal({ onClose, onCreate, defaultTemplate }: CreateBuildModalProps) {
   const [name, setName] = useState('');
-  const [selectedTemplate, setSelectedTemplate] = useState<GameTemplate>('flappy');
+  const [selectedTemplate, setSelectedTemplate] = useState<GameTemplate>(defaultTemplate || 'flappy');
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {

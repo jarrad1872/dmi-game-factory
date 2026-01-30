@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DMI Game | Build with AI</title>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      background: #1a1a2e; 
+      overflow: hidden;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #game-container { 
+      width: 100vw; 
+      height: 100vh; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      position: relative;
+    }
+    canvas { 
+      max-width: 100%; 
+      max-height: 100%;
+    }
+    .cta-button {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #FF6B00 0%, #4FC3F7 100%);
+      color: white;
+      padding: 14px 36px;
+      border-radius: 30px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 16px;
+      z-index: 1000;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      transition: all 0.3s ease;
+    }
+    .cta-button:hover { 
+      transform: translateX(-50%) translateY(-2px) scale(1.02); 
+    }
+    .branding {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      color: white;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0.9;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,0,0,0.4);
+      padding: 8px 14px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+    .branding-icon {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, #FF6B00, #4FC3F7);
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container"></div>
+  <div class="branding">
+    <div class="branding-icon"></div>
+    <span>DMI Tools Corp</span>
+  </div>
+  <a href="https://dmitools.com" target="_blank" rel="noopener" class="cta-button">Shop DMI Tools</a>
+  
+  <script>
+    // ============================================
+    // BLANK TEMPLATE - Use AI to build your game!
+    // ============================================
+    // 
+    // This is a minimal Phaser 3 setup. Use the AI
+    // assistant to add game mechanics, visuals, and
+    // interactivity.
+    //
+    // Example prompts:
+    // - "Create a simple click counter game"
+    // - "Add a bouncing ball that the player can click"
+    // - "Build a whack-a-mole style game"
+    //
+    // ============================================
+
+    class GameScene extends Phaser.Scene {
+      constructor() {
+        super({ key: 'GameScene' });
+      }
+
+      create() {
+        const { width, height } = this.scale;
+        
+        // Background
+        this.add.rectangle(width/2, height/2, width, height, 0x1a1a2e);
+        
+        // Welcome text
+        this.add.text(width/2, height/2 - 60, '🎮 DMI Game Factory', {
+          fontSize: '28px',
+          fontFamily: 'Inter, sans-serif',
+          fill: '#ffffff',
+          fontStyle: 'bold'
+        }).setOrigin(0.5);
+        
+        this.add.text(width/2, height/2, 'Use AI to build your game!', {
+          fontSize: '18px',
+          fontFamily: 'Inter, sans-serif',
+          fill: '#888888'
+        }).setOrigin(0.5);
+        
+        // Animated prompt
+        const hint = this.add.text(width/2, height/2 + 60, '✨ Describe what you want to create', {
+          fontSize: '14px',
+          fontFamily: 'Inter, sans-serif',
+          fill: '#FF6B00'
+        }).setOrigin(0.5);
+        
+        this.tweens.add({
+          targets: hint,
+          alpha: 0.5,
+          duration: 1000,
+          yoyo: true,
+          repeat: -1
+        });
+        
+        // Floating particles
+        for (let i = 0; i < 20; i++) {
+          const x = Phaser.Math.Between(0, width);
+          const y = Phaser.Math.Between(0, height);
+          const circle = this.add.circle(x, y, Phaser.Math.Between(2, 4), 0xffffff, 0.1);
+          
+          this.tweens.add({
+            targets: circle,
+            y: y - 100,
+            alpha: 0,
+            duration: Phaser.Math.Between(3000, 6000),
+            repeat: -1,
+            yoyo: true
+          });
+        }
+      }
+    }
+
+    const game = new Phaser.Game({
+      type: Phaser.AUTO,
+      parent: 'game-container',
+      width: 400,
+      height: 700,
+      scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+      },
+      scene: [GameScene],
+      render: {
+        antialias: true,
+        roundPixels: true
+      }
+    });
+  </script>
+</body>
+</html>

@@ -34,6 +34,7 @@ export interface GameBuild {
   createdAt: string;
   updatedAt: string;
   thumbnail?: string;
+  code?: string; // Custom code from code editor
 }
 
 export const DEFAULT_CONFIG: GameConfig = {

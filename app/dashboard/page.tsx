@@ -1,18 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { GameBuild, GameTemplate } from '@/lib/types';
 import { getBuilds, createBuild, deleteBuild, cloneBuild } from '@/lib/storage';
 import BuildCard from '@/components/BuildCard';
 import CreateBuildModal from '@/components/CreateBuildModal';
 
-export default function DashboardPage() {
+function DashboardContent() {
   const [builds, setBuilds] = useState<GameBuild[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [preselectedTemplate, setPreselectedTemplate] = useState<GameTemplate | undefined>();
   const [filter, setFilter] = useState<'all' | 'draft' | 'published'>('all');
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     // Check auth
@@ -23,9 +26,18 @@ export default function DashboardPage() {
         setLoading(false);
         // Load builds
         setBuilds(getBuilds());
+        
+        // Check for template parameter from gallery
+        const templateParam = searchParams.get('template');
+        if (templateParam) {
+          setPreselectedTemplate(templateParam as GameTemplate);
+          setShowModal(true);
+          // Clear the URL parameter
+          router.replace('/dashboard', { scroll: false });
+        }
       }
     });
-  }, [router]);
+  }, [router, searchParams]);
 
   const handleCreate = (name: string, template?: GameTemplate) => {
     const build = createBuild(name, undefined, template);
@@ -143,8 +155,19 @@ export default function DashboardPage() {
             ))}
           </div>
           
+          <Link
+            href="/gallery"
+            className="flex items-center gap-2 px-4 py-3 bg-gray-800 hover:bg-gray-700 rounded-xl font-medium transition-all text-gray-300 hover:text-white"
+          >
+            <span>🎨</span>
+            <span>Gallery</span>
+          </Link>
+          
           <button
-            onClick={() => setShowModal(true)}
+            onClick={() => {
+              setPreselectedTemplate(undefined);
+              setShowModal(true);
+            }}
             className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-dmi-orange to-orange-500 hover:from-orange-500 hover:to-dmi-orange rounded-xl font-semibold transition-all shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -212,10 +235,30 @@ export default function DashboardPage() {
       {/* Create Modal */}
       {showModal && (
         <CreateBuildModal
-          onClose={() => setShowModal(false)}
+          onClose={() => {
+            setShowModal(false);
+            setPreselectedTemplate(undefined);
+          }}
           onCreate={handleCreate}
+          defaultTemplate={preselectedTemplate}
         />
       )}
     </div>
+  );
+}
+
+// Wrap with Suspense for useSearchParams
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="spinner w-10 h-10" />
+          <span className="text-gray-400">Loading factory...</span>
+        </div>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   );
 }
