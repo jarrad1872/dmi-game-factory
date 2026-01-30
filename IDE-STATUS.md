@@ -1,5 +1,61 @@
 # DMI Game Factory - IDE Upgrade Status
 
+## 🤖 AI Game Builder (NEW!)
+
+The killer feature: **Non-coders can build games by describing what they want.**
+
+### How It Works
+1. Open any game in the editor
+2. Switch to "🤖 AI Code" tab
+3. Choose your agent: **Opus 4.5** (quality) or **Kimi K2** (fast)
+4. Describe what you want: "Make the player faster", "Add power-ups", etc.
+5. Click **Build** (or Cmd+Enter)
+6. Watch the AI modify your game in real-time!
+
+### Agent Options
+| Agent | Best For | Speed | Quality |
+|-------|----------|-------|---------|
+| 🧠 Claude Opus 4.5 | Complex features, new mechanics | Slower | Highest |
+| ⚡ Kimi K2 | Quick edits, simple changes | Fast | Good |
+
+### Example Prompts
+- "Make the player move 50% faster"
+- "Add a power-up that doubles score for 5 seconds"
+- "Change the theme to neon cyberpunk colors"
+- "Add particle effects when collecting items"
+- "Create a combo system for consecutive matches"
+- "Add screen shake when player dies"
+
+### API Endpoint
+`POST /api/agent`
+```json
+{
+  "prompt": "Make the obstacles spawn faster",
+  "currentCode": "<full HTML>",
+  "config": { /* GameConfig */ },
+  "model": "opus" | "kimi"
+}
+```
+
+Returns:
+```json
+{
+  "code": "<modified HTML>",
+  "status": "success",
+  "message": "⚡ Kimi: Increased spawn rate by 30%!",
+  "tokensUsed": 800
+}
+```
+
+### Clawdbot Integration
+Set these environment variables to connect to full AI capabilities:
+- `CLAWDBOT_API_URL` - Clawdbot API endpoint
+- `CLAWDBOT_API_TOKEN` - Authentication token
+
+Without these, the factory runs in demo mode with simple pattern-based modifications.
+
+---
+
 ## ✅ Completed Features
 
 ### 1. Monaco Code Editor (✅ Done)
@@ -62,9 +118,12 @@ dmi-game-factory/
 │   ├── gallery/
 │   │   └── page.tsx (Template gallery page)
 │   └── api/
+│       ├── agent/
+│       │   └── route.ts (AI Agent API - Clawdbot integration)
 │       └── templates/
 │           └── route.ts (Template API)
 ├── components/
+│   ├── AIAgentPanel.tsx (AI builder UI with agent selector)
 │   ├── CodeEditor.tsx (Monaco wrapper)
 │   └── CodePreviewPane.tsx (Live preview for code mode)
 └── lib/
