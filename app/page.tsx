@@ -17,10 +17,10 @@ export default function V2HomePage() {
               Supporting the concrete cutting industry since 2014.
             </p>
             <div className="flex flex-wrap gap-4">
-              <a href="/v2/create" className="btn-dmi-primary inline-block">
+              <a href="/create" className="btn-dmi-primary inline-block">
                 Create New Game
               </a>
-              <a href="/v2/templates" className="btn-dmi-secondary inline-block">
+              <a href="/templates" className="btn-dmi-secondary inline-block">
                 Browse Templates
               </a>
             </div>
@@ -68,7 +68,7 @@ export default function V2HomePage() {
               Your Games
             </h2>
             <a
-              href="/v2/create"
+              href="/create"
               className="btn-dmi-primary text-sm"
             >
               + New Game
@@ -84,7 +84,7 @@ export default function V2HomePage() {
               Start by creating your first game using one of our professional templates.
             </p>
             <a
-              href="/v2/templates"
+              href="/templates"
               className="btn-dmi-primary inline-block"
             >
               Browse Templates

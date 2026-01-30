@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Fraunces, Halant, Open_Sans } from 'next/font/google';
-import './v2-globals.css';
+import './globals.css';
 
 const fraunces = Fraunces({
   subsets: ['latin'],

@@ -5,7 +5,7 @@ export default function V2TemplatesPage() {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="container-dmi py-4">
           <div className="flex items-center justify-between">
-            <a href="/v2" className="flex items-center gap-3">
+            <a href="/" className="flex items-center gap-3">
               <img
                 src="https://dmitools.com/cdn/shop/files/dmi_800x470.png?v=1613785694"
                 alt="DMI Tools"
@@ -16,7 +16,7 @@ export default function V2TemplatesPage() {
               </span>
             </a>
             <a
-              href="/v2/create"
+              href="/create"
               className="btn-dmi-primary text-sm"
             >
               Create Game
@@ -90,7 +90,7 @@ export default function V2TemplatesPage() {
                       Difficulty: Medium
                     </span>
                     <a
-                      href="/v2/create"
+                      href="/create"
                       className="font-ui text-sm font-medium text-dmi-red hover:underline"
                     >
                       Use Template →

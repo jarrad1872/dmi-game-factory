@@ -5,7 +5,7 @@ export default function V2CreatePage() {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="container-dmi py-4">
           <div className="flex items-center justify-between">
-            <a href="/v2" className="flex items-center gap-3">
+            <a href="/" className="flex items-center gap-3">
               <img
                 src="https://dmitools.com/cdn/shop/files/dmi_800x470.png?v=1613785694"
                 alt="DMI Tools"
@@ -96,7 +96,7 @@ export default function V2CreatePage() {
             {/* Action Buttons */}
             <div className="flex items-center justify-between mt-8">
               <a
-                href="/v2"
+                href="/"
                 className="btn-dmi-secondary"
               >
                 Cancel
