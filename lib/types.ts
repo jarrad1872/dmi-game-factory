@@ -16,14 +16,19 @@ export const DMI_PRODUCTS: DMIProduct[] = [
 ];
 
 export interface GameConfig {
-  template: GameTemplate;
+  template: GameTemplate | string;
   title: string;
+  gameName?: string;
   products: string[];
   ctaText: string;
   ctaUrl: string;
   theme: GameTheme;
   difficulty: number;
   showBranding: boolean;
+  colors?: {
+    primary: string;
+    secondary: string;
+  };
 }
 
 export interface GameBuild {

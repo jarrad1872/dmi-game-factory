@@ -1,9 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { gameTemplates, getTemplateById, GameTemplate } from '@/lib/game-templates';
+import { useRouter } from 'next/navigation';
+import { gameTemplates, GameTemplate } from '@/lib/game-templates';
+import { createBuild, updateBuild } from '@/lib/storage';
 
 export default function V2CreatePage() {
+  const router = useRouter();
   const [selectedTemplate, setSelectedTemplate] = useState<GameTemplate | null>(null);
   const [step, setStep] = useState(1);
   const [gameName, setGameName] = useState('');
@@ -27,9 +30,16 @@ export default function V2CreatePage() {
     if (!selectedTemplate) return;
     
     setIsBuilding(true);
-    setBuildStatus('Connecting to AI...');
+    setBuildStatus('Creating build...');
     
     try {
+      // Create a build first
+      const build = createBuild(gameName, {
+        gameName,
+        template: selectedTemplate.id as any,
+        colors: { primary: '#A62022', secondary: '#222222' }
+      });
+      
       setBuildStatus('Generating game code with Claude Opus 4.5...');
       
       const response = await fetch('/api/agent', {
@@ -58,18 +68,20 @@ Make it mobile-friendly with touch controls.`,
       const data = await response.json();
       
       if (data.status === 'success' && data.code) {
-        setBuildStatus('Game built successfully! Opening preview...');
-        // Store the game code and redirect to preview
-        localStorage.setItem('dmi-game-preview', data.code);
-        localStorage.setItem('dmi-game-name', gameName);
-        setStep(3);
+        setBuildStatus('Game built! Opening editor...');
+        
+        // Update the build with the generated code
+        updateBuild(build.id, { code: data.code } as any);
+        
+        // Redirect to the split-screen editor
+        router.push(`/editor/${build.id}`);
       } else {
         setBuildStatus('Build failed: ' + (data.message || 'Unknown error'));
+        setIsBuilding(false);
       }
     } catch (error) {
       console.error('Build error:', error);
       setBuildStatus('Build failed: Network error');
-    } finally {
       setIsBuilding(false);
     }
   };
@@ -140,7 +152,7 @@ Make it mobile-friendly with touch controls.`,
                   3
                 </div>
                 <span className={`font-ui text-sm font-medium ${step >= 3 ? 'text-dmi-black' : 'text-gray-500'}`}>
-                  Preview
+                  Editor
                 </span>
               </div>
             </div>
@@ -292,55 +304,6 @@ Make it mobile-friendly with touch controls.`,
               </div>
             )}
 
-            {/* Step 3: Preview */}
-            {step === 3 && (
-              <div className="bg-white rounded-lg p-6 md:p-8 shadow-sm">
-                <h2 className="font-display text-xl text-dmi-black mb-6">
-                  🎉 Game Built Successfully!
-                </h2>
-                
-                <div className="text-center py-8">
-                  <div className="text-6xl mb-4">🎮</div>
-                  <h3 className="font-display text-2xl text-dmi-black mb-2">{gameName}</h3>
-                  <p className="font-body text-dmi-gray mb-6">Your game has been created and is ready to preview.</p>
-                  
-                  <div className="flex flex-wrap justify-center gap-4">
-                    <button
-                      onClick={() => {
-                        const code = localStorage.getItem('dmi-game-preview');
-                        if (code) {
-                          const newWindow = window.open('', '_blank');
-                          if (newWindow) {
-                            newWindow.document.write(code);
-                            newWindow.document.close();
-                          }
-                        }
-                      }}
-                      className="btn-dmi-primary"
-                    >
-                      🎮 Play Game
-                    </button>
-                    <button
-                      onClick={() => {
-                        const code = localStorage.getItem('dmi-game-preview');
-                        if (code) {
-                          const blob = new Blob([code], { type: 'text/html' });
-                          const url = URL.createObjectURL(blob);
-                          const a = document.createElement('a');
-                          a.href = url;
-                          a.download = `${gameName.toLowerCase().replace(/\s+/g, '-')}.html`;
-                          a.click();
-                        }
-                      }}
-                      className="btn-dmi-secondary"
-                    >
-                      📥 Download HTML
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* Action Buttons */}
             <div className="flex items-center justify-between mt-8">
               {step > 1 ? (
@@ -357,30 +320,22 @@ Make it mobile-friendly with touch controls.`,
                 </a>
               )}
               
-              {step < 3 && (
-                <button
-                  onClick={handleContinue}
-                  className="btn-dmi-primary"
-                  disabled={(step === 1 && !selectedTemplate) || isBuilding}
-                >
-                  {isBuilding ? (
-                    <>
-                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin inline-block mr-2" />
-                      Building...
-                    </>
-                  ) : step === 1 ? (
-                    'Continue →'
-                  ) : (
-                    '🚀 Build Game'
-                  )}
-                </button>
-              )}
-              
-              {step === 3 && (
-                <a href="/" className="btn-dmi-primary">
-                  Create Another Game
-                </a>
-              )}
+              <button
+                onClick={handleContinue}
+                className="btn-dmi-primary"
+                disabled={(step === 1 && !selectedTemplate) || isBuilding}
+              >
+                {isBuilding ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin inline-block mr-2" />
+                    Building...
+                  </>
+                ) : step === 1 ? (
+                  'Continue →'
+                ) : (
+                  '🚀 Build & Open Editor'
+                )}
+              </button>
             </div>
           </div>
         </div>
