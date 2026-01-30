@@ -40,48 +40,31 @@ export default function V2CreatePage() {
         colors: { primary: '#A62022', secondary: '#222222' }
       });
       
-      setBuildStatus('Generating game code with Claude Opus 4.5...');
+      setBuildStatus('Loading game template...');
       
-      const response = await fetch('/api/agent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: `Create a complete ${selectedTemplate.title} game called "${gameName}" with the following concept: ${selectedTemplate.dmiConcept}. 
-          
-Include these game elements:
-- Collectibles: ${selectedTemplate.collectibles.join(', ')}
-- Obstacles: ${selectedTemplate.obstacles.join(', ')}
-- Power-ups: ${selectedTemplate.powerUps.join(', ')}
-
-Use DMI Tools branding with colors: Red (#A62022), Black (#222222), White background.
-Make it mobile-friendly with touch controls.`,
-          currentCode: '<!DOCTYPE html><html><head><title>Game</title></head><body></body></html>',
-          config: { 
-            gameName,
-            template: selectedTemplate.id,
-            colors: { primary: '#A62022', secondary: '#222222' }
-          },
-          model: 'opus'
-        })
-      });
-
-      const data = await response.json();
+      // Load pre-built template (instant, no AI needed)
+      const templateRes = await fetch(`/api/templates?id=${selectedTemplate.id}&action=html`);
+      const templateCode = await templateRes.text();
       
-      if (data.status === 'success' && data.code) {
-        setBuildStatus('Game built! Opening editor...');
-        
-        // Update the build with the generated code
-        updateBuild(build.id, { code: data.code } as any);
-        
-        // Redirect to the split-screen editor
-        router.push(`/editor/${build.id}`);
-      } else {
-        setBuildStatus('Build failed: ' + (data.message || 'Unknown error'));
-        setIsBuilding(false);
-      }
+      // Customize the template title
+      const customizedCode = templateCode.replace(
+        /title: ['"].*?['"]/,
+        `title: '${gameName}'`
+      ).replace(
+        /<title>.*?<\/title>/,
+        `<title>${gameName} - DMI Tools</title>`
+      );
+      
+      setBuildStatus('Opening editor...');
+      
+      // Update the build with the template code
+      updateBuild(build.id, { code: customizedCode } as any);
+      
+      // Redirect to the split-screen editor
+      router.push(`/editor/${build.id}`);
     } catch (error) {
       console.error('Build error:', error);
-      setBuildStatus('Build failed: Network error');
+      setBuildStatus('Build failed: ' + (error instanceof Error ? error.message : 'Unknown error'));
       setIsBuilding(false);
     }
   };

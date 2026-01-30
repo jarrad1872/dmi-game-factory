@@ -141,7 +141,7 @@ export default function AIAgentPanel({ currentCode, config, onCodeGenerated }: A
             <span className="text-lg">🧠</span>
             <div className="flex-1">
               <span className="font-semibold text-sm text-purple-300">Claude Opus 4.5</span>
-              <span className="text-xs text-gray-500 ml-2">Heavy hitter • Best quality</span>
+              <span className="text-xs text-gray-500 ml-2">Claude Max</span>
             </div>
           </div>
 

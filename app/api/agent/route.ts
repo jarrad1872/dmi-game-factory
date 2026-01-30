@@ -5,7 +5,7 @@ interface AgentRequest {
   prompt: string;
   currentCode: string;
   config: GameConfig;
-  model: 'opus';
+  model: 'opus' | 'sonnet';
 }
 
 interface AgentResponse {
@@ -15,35 +15,42 @@ interface AgentResponse {
   tokensUsed?: number;
 }
 
-// Model configuration - using Claude Max proxy (Opus only)
+// Model configuration - using Claude Max proxy
+// Use Sonnet for faster modifications, Opus for complex generation
 const MODEL_CONFIG = {
   opus: {
     name: 'claude-opus-4',
     maxTokens: 4000,
     temperature: 0.7,
+  },
+  sonnet: {
+    name: 'claude-sonnet-4',
+    maxTokens: 2000,  // Lower for faster responses
+    temperature: 0.5,
   }
 };
 
-// System prompt for the AI agent
-const SYSTEM_PROMPT = `You are an expert game developer AI assistant for DMI Game Factory.
-Your job is to modify or enhance HTML5/JavaScript games built with Phaser 3.
+// System prompt for the AI agent - focused on MODIFICATIONS
+const SYSTEM_PROMPT = `You are an expert game developer modifying Phaser 3 games for DMI Game Factory.
 
-RULES:
-1. Always return COMPLETE, working HTML files
-2. Keep the existing CONFIG object structure for theming
-3. Preserve {{TEMPLATE_VARIABLES}} for dynamic values
-4. Use Phaser 3 best practices
-5. Add comments for significant changes
-6. Ensure games are mobile-friendly (touch input)
-7. Keep the DMI branding elements intact
+CRITICAL RULES:
+1. Return ONLY the complete HTML file - no explanations
+2. Keep the CONFIG object at the top - it controls game parameters
+3. Make MINIMAL changes - only modify what's requested
+4. Preserve all existing functionality
+5. Keep DMI branding (red #A62022)
+6. Maintain mobile touch support
 
-When modifying code:
-- Analyze the existing code structure first
-- Make targeted changes based on the user's request
-- Test logic mentally before outputting
-- Preserve working functionality
+CONFIG OBJECT is your friend:
+- Change playerSpeed, jumpForce, gravity for physics
+- Change spawnRate for difficulty
+- Change collectiblePoints for scoring
+- Change title for branding
 
-Return ONLY the complete HTML code, no explanations.`;
+For simple requests like "make it faster" or "easier", ONLY modify CONFIG values.
+For complex requests, modify the relevant scene/function.
+
+Return the FULL HTML file with your modifications.`;
 
 // Generate a complete working game template
 function generateGameTemplate(config: GameConfig): string {
@@ -422,7 +429,7 @@ async function generatePlaceholderResponse(
   prompt: string,
   currentCode: string,
   config: GameConfig,
-  model: 'opus'
+  model: 'opus' | 'sonnet'
 ): Promise<AgentResponse> {
   
   // Simulate processing time

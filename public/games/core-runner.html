@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Core Runner Pro - DMI Tools</title>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      overflow: hidden;
+    }
+    #game-container { 
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container"></div>
+  <script>
+    // ============================================
+    // DMI GAME CONFIG - Modify these values easily
+    // ============================================
+    const CONFIG = {
+      // Branding
+      title: 'Core Runner Pro',
+      brandColor: 0xA62022,      // DMI Red
+      accentColor: 0xFFD700,     // Gold for collectibles
+      bgColor: 0xF5F5F5,         // Light gray background
+      
+      // Gameplay
+      playerSpeed: 300,          // Horizontal auto-scroll speed
+      jumpForce: -500,           // Negative = up
+      gravity: 1200,
+      obstacleSpeed: 350,
+      spawnRate: 1800,           // ms between spawns
+      
+      // Scoring
+      collectiblePoints: 10,
+      distancePoints: 1,         // Points per 100px traveled
+      
+      // Difficulty scaling
+      speedIncrease: 0.02,       // 2% faster each collect
+      maxSpeedMultiplier: 2.0,
+      
+      // Collectibles (DMI themed)
+      collectibles: ['💎', '🔘', '⭕', '⚙️'],
+      obstacles: ['🧱', '🚧', '🔩'],
+      powerups: ['⚡', '🛡️', '🧲'],
+    };
+
+    // ============================================
+    // GAME SCENES
+    // ============================================
+    
+    class BootScene extends Phaser.Scene {
+      constructor() { super({ key: 'BootScene' }); }
+      
+      preload() {
+        // Create textures programmatically
+        const g = this.make.graphics({ add: false });
+        
+        // Player (red square with rounded corners effect)
+        g.fillStyle(CONFIG.brandColor, 1);
+        g.fillRoundedRect(0, 0, 50, 50, 8);
+        g.generateTexture('player', 50, 50);
+        
+        // Ground
+        g.clear();
+        g.fillStyle(0x333333, 1);
+        g.fillRect(0, 0, 32, 32);
+        g.generateTexture('ground', 32, 32);
+        
+        // Collectible
+        g.clear();
+        g.fillStyle(CONFIG.accentColor, 1);
+        g.fillCircle(20, 20, 18);
+        g.fillStyle(0xFFFFFF, 0.5);
+        g.fillCircle(14, 14, 6);
+        g.generateTexture('coin', 40, 40);
+        
+        // Obstacle
+        g.clear();
+        g.fillStyle(0x444444, 1);
+        g.fillRect(0, 0, 50, 80);
+        g.fillStyle(0x666666, 1);
+        g.fillRect(5, 5, 40, 70);
+        g.generateTexture('obstacle', 50, 80);
+        
+        // Particle
+        g.clear();
+        g.fillStyle(CONFIG.accentColor, 1);
+        g.fillCircle(4, 4, 4);
+        g.generateTexture('particle', 8, 8);
+        
+        g.destroy();
+      }
+      
+      create() {
+        this.scene.start('MenuScene');
+      }
+    }
+    
+    class MenuScene extends Phaser.Scene {
+      constructor() { super({ key: 'MenuScene' }); }
+      
+      create() {
+        const { width, height } = this.scale;
+        
+        // Background
+        this.add.rectangle(width/2, height/2, width, height, CONFIG.bgColor);
+        
+        // Title
+        this.add.text(width/2, height * 0.25, CONFIG.title, {
+          fontSize: '48px',
+          fontFamily: 'system-ui',
+          color: '#A62022',
+          fontStyle: 'bold'
+        }).setOrigin(0.5);
+        
+        // Subtitle
+        this.add.text(width/2, height * 0.35, 'by DMI Tools', {
+          fontSize: '20px',
+          fontFamily: 'system-ui',
+          color: '#666666'
+        }).setOrigin(0.5);
+        
+        // Instructions
+        this.add.text(width/2, height * 0.55, '🏃 Run endlessly\n💎 Collect diamonds\n🧱 Avoid obstacles', {
+          fontSize: '24px',
+          fontFamily: 'system-ui',
+          color: '#333333',
+          align: 'center',
+          lineSpacing: 12
+        }).setOrigin(0.5);
+        
+        // Play button
+        const playBtn = this.add.rectangle(width/2, height * 0.78, 200, 60, CONFIG.brandColor, 1)
+          .setInteractive({ useHandCursor: true });
+        
+        this.add.text(width/2, height * 0.78, '▶ PLAY', {
+          fontSize: '28px',
+          fontFamily: 'system-ui',
+          color: '#FFFFFF',
+          fontStyle: 'bold'
+        }).setOrigin(0.5);
+        
+        playBtn.on('pointerover', () => playBtn.setFillStyle(0x8B1A1A));
+        playBtn.on('pointerout', () => playBtn.setFillStyle(CONFIG.brandColor));
+        playBtn.on('pointerdown', () => this.scene.start('GameScene'));
+        
+        // Touch/click anywhere also starts
+        this.input.keyboard.on('keydown-SPACE', () => this.scene.start('GameScene'));
+      }
+    }
+    
+    class GameScene extends Phaser.Scene {
+      constructor() { super({ key: 'GameScene' }); }
+      
+      create() {
+        const { width, height } = this.scale;
+        
+        // State
+        this.score = 0;
+        this.distance = 0;
+        this.speedMultiplier = 1;
+        this.gameOver = false;
+        
+        // Background
+        this.add.rectangle(width/2, height/2, width, height, CONFIG.bgColor);
+        
+        // Ground
+        this.ground = this.add.tileSprite(width/2, height - 30, width, 60, 'ground');
+        this.physics.add.existing(this.ground, true);
+        
+        // Player
+        this.player = this.physics.add.sprite(120, height - 100, 'player');
+        this.player.setCollideWorldBounds(true);
+        this.player.setBounce(0.1);
+        this.player.setGravityY(CONFIG.gravity);
+        
+        // Groups
+        this.collectibles = this.physics.add.group();
+        this.obstacles = this.physics.add.group();
+        
+        // Collisions
+        this.physics.add.collider(this.player, this.ground);
+        this.physics.add.overlap(this.player, this.collectibles, this.collect, null, this);
+        this.physics.add.collider(this.player, this.obstacles, this.hitObstacle, null, this);
+        
+        // Spawn timer
+        this.spawnTimer = this.time.addEvent({
+          delay: CONFIG.spawnRate,
+          callback: this.spawnObjects,
+          callbackScope: this,
+          loop: true
+        });
+        
+        // UI
+        this.scoreText = this.add.text(20, 20, 'Score: 0', {
+          fontSize: '28px',
+          fontFamily: 'system-ui',
+          color: '#333333',
+          fontStyle: 'bold'
+        });
+        
+        this.add.text(width - 20, 20, 'DMI Tools', {
+          fontSize: '16px',
+          fontFamily: 'system-ui',
+          color: '#A62022',
+          fontStyle: 'bold'
+        }).setOrigin(1, 0);
+        
+        // Particles
+        this.particles = this.add.particles(0, 0, 'particle', {
+          speed: { min: 50, max: 150 },
+          angle: { min: 0, max: 360 },
+          scale: { start: 1.5, end: 0 },
+          lifespan: 400,
+          gravityY: 300,
+          emitting: false
+        });
+        
+        // Input
+        this.input.on('pointerdown', this.jump, this);
+        this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.upKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+      }
+      
+      update(time, delta) {
+        if (this.gameOver) return;
+        
+        // Scroll ground
+        this.ground.tilePositionX += CONFIG.playerSpeed * this.speedMultiplier * (delta / 1000);
+        
+        // Distance scoring
+        this.distance += CONFIG.playerSpeed * this.speedMultiplier * (delta / 1000);
+        if (Math.floor(this.distance / 100) > Math.floor((this.distance - CONFIG.playerSpeed * this.speedMultiplier * (delta / 1000)) / 100)) {
+          this.score += CONFIG.distancePoints;
+          this.updateScore();
+        }
+        
+        // Jump input
+        if (Phaser.Input.Keyboard.JustDown(this.spaceKey) || Phaser.Input.Keyboard.JustDown(this.upKey)) {
+          this.jump();
+        }
+        
+        // Move obstacles/collectibles
+        const speed = CONFIG.obstacleSpeed * this.speedMultiplier;
+        
+        this.obstacles.children.entries.forEach(obj => {
+          obj.x -= speed * (delta / 1000);
+          if (obj.x < -60) obj.destroy();
+        });
+        
+        this.collectibles.children.entries.forEach(obj => {
+          obj.x -= speed * (delta / 1000);
+          obj.y += Math.sin(time * 0.005 + obj.x * 0.01) * 0.5; // Float effect
+          if (obj.x < -60) obj.destroy();
+        });
+      }
+      
+      jump() {
+        if (this.player.body.touching.down) {
+          this.player.setVelocityY(CONFIG.jumpForce);
+        }
+      }
+      
+      spawnObjects() {
+        if (this.gameOver) return;
+        
+        const { width, height } = this.scale;
+        const groundY = height - 60;
+        
+        // Random spawn type
+        const rand = Math.random();
+        
+        if (rand < 0.4) {
+          // Obstacle
+          const obstacle = this.obstacles.create(width + 50, groundY - 40, 'obstacle');
+          obstacle.body.setAllowGravity(false);
+          obstacle.setImmovable(true);
+        }
+        
+        if (rand > 0.3) {
+          // Collectible
+          const yPos = groundY - Phaser.Math.Between(80, 200);
+          const coin = this.collectibles.create(width + 50, yPos, 'coin');
+          coin.body.setAllowGravity(false);
+        }
+      }
+      
+      collect(player, collectible) {
+        collectible.destroy();
+        
+        // Score
+        this.score += CONFIG.collectiblePoints;
+        this.updateScore();
+        
+        // Speed up
+        this.speedMultiplier = Math.min(
+          this.speedMultiplier * (1 + CONFIG.speedIncrease),
+          CONFIG.maxSpeedMultiplier
+        );
+        
+        // Particles
+        this.particles.emitParticleAt(collectible.x, collectible.y, 15);
+        
+        // Flash effect
+        this.cameras.main.flash(100, 255, 215, 0, false);
+      }
+      
+      hitObstacle(player, obstacle) {
+        this.gameOver = true;
+        this.physics.pause();
+        
+        // Visual feedback
+        player.setTint(0x888888);
+        this.cameras.main.shake(400, 0.03);
+        
+        // Game over UI
+        const { width, height } = this.scale;
+        
+        this.add.rectangle(width/2, height/2, width, height, 0x000000, 0.7);
+        
+        this.add.text(width/2, height * 0.35, 'GAME OVER', {
+          fontSize: '56px',
+          fontFamily: 'system-ui',
+          color: '#A62022',
+          fontStyle: 'bold'
+        }).setOrigin(0.5);
+        
+        this.add.text(width/2, height * 0.48, `Score: ${this.score}`, {
+          fontSize: '32px',
+          fontFamily: 'system-ui',
+          color: '#FFFFFF'
+        }).setOrigin(0.5);
+        
+        this.add.text(width/2, height * 0.56, `Distance: ${Math.floor(this.distance)}m`, {
+          fontSize: '24px',
+          fontFamily: 'system-ui',
+          color: '#CCCCCC'
+        }).setOrigin(0.5);
+        
+        // Restart button
+        const restartBtn = this.add.rectangle(width/2, height * 0.72, 220, 60, CONFIG.brandColor)
+          .setInteractive({ useHandCursor: true });
+        
+        this.add.text(width/2, height * 0.72, '↻ PLAY AGAIN', {
+          fontSize: '24px',
+          fontFamily: 'system-ui',
+          color: '#FFFFFF',
+          fontStyle: 'bold'
+        }).setOrigin(0.5);
+        
+        restartBtn.on('pointerover', () => restartBtn.setFillStyle(0x8B1A1A));
+        restartBtn.on('pointerout', () => restartBtn.setFillStyle(CONFIG.brandColor));
+        restartBtn.on('pointerdown', () => this.scene.restart());
+        
+        // Space to restart
+        this.input.keyboard.once('keydown-SPACE', () => this.scene.restart());
+        this.input.once('pointerdown', () => {
+          // Delay to prevent accidental restart
+          this.time.delayedCall(300, () => {
+            this.input.once('pointerdown', () => this.scene.restart());
+          });
+        });
+      }
+      
+      updateScore() {
+        this.scoreText.setText(`Score: ${this.score}`);
+      }
+    }
+
+    // ============================================
+    // GAME INITIALIZATION
+    // ============================================
+    const game = new Phaser.Game({
+      type: Phaser.AUTO,
+      width: 800,
+      height: 600,
+      parent: 'game-container',
+      backgroundColor: CONFIG.bgColor,
+      physics: {
+        default: 'arcade',
+        arcade: {
+          gravity: { y: 0 },
+          debug: false
+        }
+      },
+      scene: [BootScene, MenuScene, GameScene],
+      scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+      }
+    });
+  </script>
+</body>
+</html>
