@@ -9,28 +9,11 @@ interface AIAgentPanelProps {
   onCodeGenerated: (code: string) => void;
 }
 
-type AgentModel = 'opus' | 'kimi';
-
 interface AgentStatus {
   status: 'idle' | 'thinking' | 'coding' | 'complete' | 'error';
   message: string;
   progress?: number;
 }
-
-const AGENT_INFO: Record<AgentModel, { name: string; icon: string; description: string; color: string }> = {
-  opus: {
-    name: 'Claude Opus 4.5',
-    icon: '🧠',
-    description: 'Heavy hitter • Best quality • Complex tasks',
-    color: 'from-purple-500 to-indigo-600'
-  },
-  kimi: {
-    name: 'Kimi K2',
-    icon: '⚡',
-    description: 'Lightning fast • Cost-effective • Quick edits',
-    color: 'from-cyan-500 to-blue-500'
-  }
-};
 
 const EXAMPLE_PROMPTS = [
   "Make the player move 50% faster",
@@ -44,11 +27,10 @@ const EXAMPLE_PROMPTS = [
 ];
 
 export default function AIAgentPanel({ currentCode, config, onCodeGenerated }: AIAgentPanelProps) {
-  const [selectedAgent, setSelectedAgent] = useState<AgentModel>('kimi');
   const [prompt, setPrompt] = useState('');
   const [status, setStatus] = useState<AgentStatus>({ status: 'idle', message: '' });
   const [isExpanded, setIsExpanded] = useState(true);
-  const [history, setHistory] = useState<{ prompt: string; agent: AgentModel; success: boolean }[]>([]);
+  const [history, setHistory] = useState<{ prompt: string; success: boolean }[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto-resize textarea
@@ -62,7 +44,7 @@ export default function AIAgentPanel({ currentCode, config, onCodeGenerated }: A
   const handleBuild = async () => {
     if (!prompt.trim()) return;
     
-    setStatus({ status: 'thinking', message: 'Agent is analyzing your request...' });
+    setStatus({ status: 'thinking', message: 'Opus is analyzing your request...' });
     
     try {
       // Simulate progress updates
@@ -85,16 +67,16 @@ export default function AIAgentPanel({ currentCode, config, onCodeGenerated }: A
           prompt: prompt.trim(),
           currentCode,
           config,
-          model: selectedAgent
+          model: 'opus'
         })
       });
 
       const data = await response.json();
 
       if (response.ok && data.code) {
-        setStatus({ status: 'complete', message: data.message || 'Code generated successfully!', progress: 100 });
+        setStatus({ status: 'complete', message: data.message || '🧠 Opus made your changes!', progress: 100 });
         onCodeGenerated(data.code);
-        setHistory(prev => [{ prompt: prompt.trim(), agent: selectedAgent, success: true }, ...prev.slice(0, 9)]);
+        setHistory(prev => [{ prompt: prompt.trim(), success: true }, ...prev.slice(0, 9)]);
         setPrompt('');
       } else {
         throw new Error(data.error || 'Failed to generate code');
@@ -105,7 +87,7 @@ export default function AIAgentPanel({ currentCode, config, onCodeGenerated }: A
         status: 'error', 
         message: error instanceof Error ? error.message : 'Something went wrong. Try again.' 
       });
-      setHistory(prev => [{ prompt: prompt.trim(), agent: selectedAgent, success: false }, ...prev.slice(0, 9)]);
+      setHistory(prev => [{ prompt: prompt.trim(), success: false }, ...prev.slice(0, 9)]);
     }
 
     // Reset status after delay
@@ -136,12 +118,12 @@ export default function AIAgentPanel({ currentCode, config, onCodeGenerated }: A
         className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
       >
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-dmi-orange to-purple-600 flex items-center justify-center">
-            <span className="text-lg">🤖</span>
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+            <span className="text-lg">🧠</span>
           </div>
           <div className="text-left">
             <h3 className="font-semibold text-sm">AI Game Builder</h3>
-            <p className="text-xs text-gray-500">Describe what you want, AI builds it</p>
+            <p className="text-xs text-gray-500">Powered by Claude Opus 4.5</p>
           </div>
         </div>
         <svg 
@@ -154,27 +136,13 @@ export default function AIAgentPanel({ currentCode, config, onCodeGenerated }: A
 
       {isExpanded && (
         <div className="px-4 pb-4 space-y-4">
-          {/* Agent Selector */}
-          <div className="flex gap-2">
-            {(Object.entries(AGENT_INFO) as [AgentModel, typeof AGENT_INFO['opus']][]).map(([id, agent]) => (
-              <button
-                key={id}
-                onClick={() => setSelectedAgent(id)}
-                className={`flex-1 p-3 rounded-xl border-2 transition-all text-left ${
-                  selectedAgent === id
-                    ? `border-transparent bg-gradient-to-r ${agent.color} shadow-lg`
-                    : 'border-gray-700 bg-gray-800/50 hover:border-gray-600'
-                }`}
-              >
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-lg">{agent.icon}</span>
-                  <span className="font-semibold text-sm">{agent.name}</span>
-                </div>
-                <p className={`text-xs ${selectedAgent === id ? 'text-white/80' : 'text-gray-500'}`}>
-                  {agent.description}
-                </p>
-              </button>
-            ))}
+          {/* Model Badge */}
+          <div className="flex items-center gap-2 px-3 py-2 bg-purple-500/10 border border-purple-500/20 rounded-xl">
+            <span className="text-lg">🧠</span>
+            <div className="flex-1">
+              <span className="font-semibold text-sm text-purple-300">Claude Opus 4.5</span>
+              <span className="text-xs text-gray-500 ml-2">Heavy hitter • Best quality</span>
+            </div>
           </div>
 
           {/* Prompt Input */}
@@ -185,7 +153,7 @@ export default function AIAgentPanel({ currentCode, config, onCodeGenerated }: A
               onChange={(e) => setPrompt(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Describe what you want to build or change..."
-              className="w-full px-4 py-3 pr-24 bg-gray-800/80 border border-gray-700 rounded-xl resize-none focus:outline-none focus:border-dmi-orange transition-colors text-sm min-h-[48px]"
+              className="w-full px-4 py-3 pr-24 bg-gray-800/80 border border-gray-700 rounded-xl resize-none focus:outline-none focus:border-purple-500 transition-colors text-sm min-h-[48px]"
               rows={1}
               disabled={status.status === 'thinking' || status.status === 'coding'}
             />
@@ -195,7 +163,7 @@ export default function AIAgentPanel({ currentCode, config, onCodeGenerated }: A
               className={`absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${
                 !prompt.trim() || status.status === 'thinking' || status.status === 'coding'
                   ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                  : `bg-gradient-to-r ${AGENT_INFO[selectedAgent].color} text-white hover:shadow-lg`
+                  : 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white hover:shadow-lg'
               }`}
             >
               {status.status === 'thinking' || status.status === 'coding' ? (
@@ -219,19 +187,19 @@ export default function AIAgentPanel({ currentCode, config, onCodeGenerated }: A
                 ? 'bg-red-500/20 border border-red-500/30' 
                 : status.status === 'complete'
                   ? 'bg-green-500/20 border border-green-500/30'
-                  : 'bg-gray-800/80 border border-gray-700'
+                  : 'bg-purple-500/10 border border-purple-500/30'
             }`}>
               {status.status === 'thinking' && (
                 <div className="w-5 h-5 border-2 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
               )}
               {status.status === 'coding' && (
-                <div className="w-5 h-5 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
               )}
               {status.status === 'complete' && <span className="text-green-400">✓</span>}
               {status.status === 'error' && <span className="text-red-400">✕</span>}
               <span className={`text-sm flex-1 ${
                 status.status === 'error' ? 'text-red-300' : 
-                status.status === 'complete' ? 'text-green-300' : 'text-gray-300'
+                status.status === 'complete' ? 'text-green-300' : 'text-purple-300'
               }`}>
                 {status.message}
               </span>
@@ -270,7 +238,7 @@ export default function AIAgentPanel({ currentCode, config, onCodeGenerated }: A
                     onClick={() => insertExample(item.prompt)}
                     className="w-full flex items-center gap-2 px-3 py-2 bg-gray-800/40 hover:bg-gray-800/60 rounded-lg text-left transition-colors"
                   >
-                    <span className="text-sm">{AGENT_INFO[item.agent].icon}</span>
+                    <span className="text-sm">🧠</span>
                     <span className="flex-1 text-xs text-gray-400 truncate">{item.prompt}</span>
                     <span className={item.success ? 'text-green-400' : 'text-red-400'}>
                       {item.success ? '✓' : '✕'}

@@ -5,7 +5,7 @@ interface AgentRequest {
   prompt: string;
   currentCode: string;
   config: GameConfig;
-  model: 'opus' | 'kimi';
+  model: 'opus';
 }
 
 interface AgentResponse {
@@ -15,17 +15,12 @@ interface AgentResponse {
   tokensUsed?: number;
 }
 
-// Model configurations - using Claude Max proxy
+// Model configuration - using Claude Max proxy (Opus only)
 const MODEL_CONFIG = {
   opus: {
     name: 'claude-opus-4',
     maxTokens: 16000,
     temperature: 0.7,
-  },
-  kimi: {
-    name: 'claude-sonnet-4',  // Use Sonnet for fast/cheap option
-    maxTokens: 8000,
-    temperature: 0.5,
   }
 };
 
@@ -151,7 +146,7 @@ async function generatePlaceholderResponse(
   prompt: string,
   currentCode: string,
   config: GameConfig,
-  model: 'opus' | 'kimi'
+  model: 'opus'
 ): Promise<AgentResponse> {
   
   // Simulate processing time
@@ -209,10 +204,8 @@ async function generatePlaceholderResponse(
   return {
     code: modifiedCode,
     status: 'success',
-    message: model === 'opus' 
-      ? `🧠 Opus: ${message}` 
-      : `⚡ Sonnet: ${message}`,
-    tokensUsed: model === 'opus' ? 2500 : 800,
+    message: `🧠 Opus: ${message}`,
+    tokensUsed: 2500,
   };
 }
 
