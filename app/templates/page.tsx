@@ -92,16 +92,25 @@ export default function V2TemplatesPage() {
                     </span>
                   </div>
 
-                  {/* Placeholder Icon */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-4xl">🎮</span>
-                  </div>
+                  {/* Preview Image - shows GIF on hover */}
+                  <img 
+                    src={template.previewImage}
+                    alt={template.title}
+                    className="absolute inset-0 w-full h-full object-cover group-hover:hidden"
+                    loading="lazy"
+                  />
+                  <img 
+                    src={template.previewGif}
+                    alt={`${template.title} gameplay`}
+                    className="absolute inset-0 w-full h-full object-cover hidden group-hover:block"
+                    loading="lazy"
+                  />
                   
                   {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-dmi-red/90 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <button className="btn-dmi-primary bg-white text-dmi-red border-white hover:bg-transparent hover:text-white">
+                  <div className="absolute inset-0 bg-dmi-red/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span className="btn-dmi-primary bg-white text-dmi-red border-white text-sm">
                       View Details
-                    </button>
+                    </span>
                   </div>
                 </div>
                 
