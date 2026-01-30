@@ -14,8 +14,8 @@ export interface GameTemplate {
   estimatedTime: string;
   referenceGames: string[];
   prdFile: string;
-  previewImage: string;
-  previewGif: string;
+  icon: string;
+  color: string;
 }
 
 export const gameTemplates: GameTemplate[] = [
@@ -34,8 +34,8 @@ export const gameTemplates: GameTemplate[] = [
     estimatedTime: '2-3 days',
     referenceGames: ['Subway Surfers', 'Temple Run', 'Jetpack Joyride'],
     prdFile: '01-endless-runner.md',
-    previewImage: 'https://i.imgur.com/JLdPKBE.png',
-    previewGif: 'https://media.giphy.com/media/xT9IgzoKnwFNmISR8I/giphy.gif'
+    icon: '🏃',
+    color: 'from-orange-500 to-red-600'
   },
   {
     id: 'match3-puzzle',
@@ -52,8 +52,8 @@ export const gameTemplates: GameTemplate[] = [
     estimatedTime: '2 days',
     referenceGames: ['Candy Crush', 'Bejeweled', 'Gardenscapes'],
     prdFile: '02-match3-puzzle.md',
-    previewImage: 'https://i.imgur.com/7LqYAHO.png',
-    previewGif: 'https://media.giphy.com/media/3oEjI5VtIhHvK37WYo/giphy.gif'
+    icon: '💎',
+    color: 'from-purple-500 to-pink-600'
   },
   {
     id: 'stacking-tower',
@@ -70,8 +70,8 @@ export const gameTemplates: GameTemplate[] = [
     estimatedTime: '1-2 days',
     referenceGames: ['Stack', 'Tower Bloxx', 'Stacky Dash'],
     prdFile: '03-stacking-tower.md',
-    previewImage: 'https://i.imgur.com/kXPQHsT.png',
-    previewGif: 'https://media.giphy.com/media/l378bu6ZYmzS6nBGo/giphy.gif'
+    icon: '🏗️',
+    color: 'from-blue-500 to-cyan-600'
   },
   {
     id: 'timing-rhythm',
@@ -88,8 +88,8 @@ export const gameTemplates: GameTemplate[] = [
     estimatedTime: '2-3 days',
     referenceGames: ['Piano Tiles', 'Tiles Hop', 'Beat Saber'],
     prdFile: '04-timing-rhythm.md',
-    previewImage: 'https://i.imgur.com/WqQz7Dp.png',
-    previewGif: 'https://media.giphy.com/media/xUPGcCh4nUHyCkyuti/giphy.gif'
+    icon: '🎵',
+    color: 'from-indigo-500 to-purple-600'
   },
   {
     id: 'idle-clicker',
@@ -106,8 +106,8 @@ export const gameTemplates: GameTemplate[] = [
     estimatedTime: '2-3 days',
     referenceGames: ['Cookie Clicker', 'AdVenture Capitalist', 'Egg Inc'],
     prdFile: '05-idle-clicker.md',
-    previewImage: 'https://i.imgur.com/8VzTKx2.png',
-    previewGif: 'https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif'
+    icon: '🏭',
+    color: 'from-green-500 to-emerald-600'
   },
   {
     id: 'blade-master',
@@ -124,8 +124,8 @@ export const gameTemplates: GameTemplate[] = [
     estimatedTime: '2 days',
     referenceGames: ['Fruit Ninja', 'Slice It', 'Juice Cubes'],
     prdFile: '06-blade-master.md',
-    previewImage: 'https://i.imgur.com/qKPVJQs.png',
-    previewGif: 'https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif'
+    icon: '⚔️',
+    color: 'from-red-500 to-orange-600'
   },
   {
     id: 'drill-dive',
@@ -142,8 +142,8 @@ export const gameTemplates: GameTemplate[] = [
     estimatedTime: '2 days',
     referenceGames: ['Flappy Bird', 'Helix Jump', 'Diving Duck'],
     prdFile: '07-drill-dive.md',
-    previewImage: 'https://i.imgur.com/Y8jKz3T.png',
-    previewGif: 'https://media.giphy.com/media/euuaA2cwLEUuI/giphy.gif'
+    icon: '🕳️',
+    color: 'from-amber-500 to-yellow-600'
   },
   {
     id: 'site-hopper',
@@ -160,8 +160,8 @@ export const gameTemplates: GameTemplate[] = [
     estimatedTime: '2-3 days',
     referenceGames: ['Crossy Road', 'Frogger', 'Hoppy Road'],
     prdFile: '08-site-hopper.md',
-    previewImage: 'https://i.imgur.com/eFgQxPM.png',
-    previewGif: 'https://media.giphy.com/media/gw3NpMPvrN64YrC0/giphy.gif'
+    icon: '🚧',
+    color: 'from-yellow-500 to-orange-500'
   },
   {
     id: 'concrete-crusher',
@@ -178,8 +178,8 @@ export const gameTemplates: GameTemplate[] = [
     estimatedTime: '2 days',
     referenceGames: ['Brick Breaker', 'Arkanoid', 'Breakout'],
     prdFile: '09-concrete-crusher.md',
-    previewImage: 'https://i.imgur.com/R3UFQHX.png',
-    previewGif: 'https://media.giphy.com/media/11ZSwQNWba4YF2/giphy.gif'
+    icon: '🧱',
+    color: 'from-gray-500 to-slate-600'
   },
   {
     id: 'target-practice',
@@ -196,8 +196,8 @@ export const gameTemplates: GameTemplate[] = [
     estimatedTime: '1-2 days',
     referenceGames: ['Duck Hunt', 'Shooting Arcade', 'Carnival Games'],
     prdFile: '10-target-practice.md',
-    previewImage: 'https://i.imgur.com/B6TkCwV.png',
-    previewGif: 'https://media.giphy.com/media/3oKIPa2TdahY8LAAxy/giphy.gif'
+    icon: '🎯',
+    color: 'from-red-600 to-rose-600'
   },
   {
     id: 'memory-match',
@@ -214,8 +214,8 @@ export const gameTemplates: GameTemplate[] = [
     estimatedTime: '1-2 days',
     referenceGames: ['Memory Match', 'Concentration', 'Lumosity'],
     prdFile: '11-memory-match.md',
-    previewImage: 'https://i.imgur.com/vWgTJnQ.png',
-    previewGif: 'https://media.giphy.com/media/d2jjIRvGomz6GMkU/giphy.gif'
+    icon: '🃏',
+    color: 'from-teal-500 to-cyan-600'
   },
   {
     id: 'sliding-puzzle-2048',
@@ -232,8 +232,8 @@ export const gameTemplates: GameTemplate[] = [
     estimatedTime: '2 days',
     referenceGames: ['2048', 'Threes', 'Drop7'],
     prdFile: '12-sliding-puzzle-2048.md',
-    previewImage: 'https://i.imgur.com/Tz5KRLY.png',
-    previewGif: 'https://media.giphy.com/media/xT9DPIBYf0pAviBLzO/giphy.gif'
+    icon: '🔢',
+    color: 'from-amber-400 to-orange-500'
   },
   {
     id: 'word-game',
@@ -250,8 +250,8 @@ export const gameTemplates: GameTemplate[] = [
     estimatedTime: '2 days',
     referenceGames: ['Wordle', 'Scrabble', 'Words with Friends'],
     prdFile: '13-word-game.md',
-    previewImage: 'https://i.imgur.com/UcqzAeJ.png',
-    previewGif: 'https://media.giphy.com/media/l0Iy8OYsLjbDfGpnq/giphy.gif'
+    icon: '📝',
+    color: 'from-green-600 to-emerald-700'
   },
   {
     id: 'quiz-trivia',
@@ -268,8 +268,8 @@ export const gameTemplates: GameTemplate[] = [
     estimatedTime: '2-3 days',
     referenceGames: ['Trivia Crack', 'QuizUp', 'Kahoot'],
     prdFile: '14-quiz-trivia.md',
-    previewImage: 'https://i.imgur.com/0dGNLpR.png',
-    previewGif: 'https://media.giphy.com/media/l41YqKTI3pFKuI9CE/giphy.gif'
+    icon: '❓',
+    color: 'from-blue-600 to-indigo-700'
   },
   {
     id: 'slot-machine',
@@ -286,8 +286,8 @@ export const gameTemplates: GameTemplate[] = [
     estimatedTime: '1-2 days',
     referenceGames: ['Slotomania', 'Jackpot Party', 'Vegas Slots'],
     prdFile: '16-slot-machine.md',
-    previewImage: 'https://i.imgur.com/yM0Zn6O.png',
-    previewGif: 'https://media.giphy.com/media/26n6WywJyh39n1pBu/giphy.gif'
+    icon: '🎰',
+    color: 'from-yellow-400 to-amber-500'
   },
   {
     id: 'claw-machine',
@@ -304,8 +304,8 @@ export const gameTemplates: GameTemplate[] = [
     estimatedTime: '2 days',
     referenceGames: ['Clawee', 'Prize Claw', 'Arcade Claw'],
     prdFile: '17-claw-machine.md',
-    previewImage: 'https://i.imgur.com/PDfxBqm.png',
-    previewGif: 'https://media.giphy.com/media/3o7TKSx1zELPrWuaIw/giphy.gif'
+    icon: '🎪',
+    color: 'from-pink-500 to-rose-600'
   },
   {
     id: 'delivery-driving',
@@ -322,8 +322,8 @@ export const gameTemplates: GameTemplate[] = [
     estimatedTime: '2-3 days',
     referenceGames: ['Crazy Taxi', 'Delivery Dash', 'Uber Driver'],
     prdFile: '18-delivery-driving.md',
-    previewImage: 'https://i.imgur.com/vFd9QXY.png',
-    previewGif: 'https://media.giphy.com/media/3oKIPtjElfqwMOTbH2/giphy.gif'
+    icon: '🚚',
+    color: 'from-blue-500 to-sky-600'
   }
 ];
 

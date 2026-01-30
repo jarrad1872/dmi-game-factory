@@ -79,9 +79,9 @@ export default function V2TemplatesPage() {
                 className="card-dmi group cursor-pointer"
                 onClick={() => setSelectedTemplate(template)}
               >
-                <div className="aspect-[4/3] bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
+                <div className={`aspect-[4/3] bg-gradient-to-br ${template.color} relative overflow-hidden`}>
                   {/* Game Number Badge */}
-                  <div className="absolute top-3 left-3 w-8 h-8 bg-dmi-red text-white rounded-full flex items-center justify-center font-ui font-bold text-sm z-10">
+                  <div className="absolute top-3 left-3 w-8 h-8 bg-white text-dmi-red rounded-full flex items-center justify-center font-ui font-bold text-sm z-10 shadow">
                     {template.number}
                   </div>
                   
@@ -92,23 +92,16 @@ export default function V2TemplatesPage() {
                     </span>
                   </div>
 
-                  {/* Preview Image - shows GIF on hover */}
-                  <img 
-                    src={template.previewImage}
-                    alt={template.title}
-                    className="absolute inset-0 w-full h-full object-cover group-hover:hidden"
-                    loading="lazy"
-                  />
-                  <img 
-                    src={template.previewGif}
-                    alt={`${template.title} gameplay`}
-                    className="absolute inset-0 w-full h-full object-cover hidden group-hover:block"
-                    loading="lazy"
-                  />
+                  {/* Icon Preview */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-6xl group-hover:scale-125 transition-transform duration-300 drop-shadow-lg">
+                      {template.icon}
+                    </span>
+                  </div>
                   
                   {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-dmi-red/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span className="btn-dmi-primary bg-white text-dmi-red border-white text-sm">
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span className="px-4 py-2 bg-white text-dmi-red rounded-lg font-ui font-semibold text-sm shadow-lg">
                       View Details
                     </span>
                   </div>

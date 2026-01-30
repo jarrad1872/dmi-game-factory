@@ -1,7 +1,82 @@
+'use client';
+
+import { useState } from 'react';
+import { gameTemplates, getTemplateById, GameTemplate } from '@/lib/game-templates';
+
 export default function V2CreatePage() {
+  const [selectedTemplate, setSelectedTemplate] = useState<GameTemplate | null>(null);
+  const [step, setStep] = useState(1);
+  const [gameName, setGameName] = useState('');
+  const [isBuilding, setIsBuilding] = useState(false);
+  const [buildStatus, setBuildStatus] = useState('');
+
+  const handleSelectTemplate = (template: GameTemplate) => {
+    setSelectedTemplate(template);
+    setGameName(template.dmiTitle);
+  };
+
+  const handleContinue = () => {
+    if (step === 1 && selectedTemplate) {
+      setStep(2);
+    } else if (step === 2) {
+      handleBuildGame();
+    }
+  };
+
+  const handleBuildGame = async () => {
+    if (!selectedTemplate) return;
+    
+    setIsBuilding(true);
+    setBuildStatus('Connecting to AI...');
+    
+    try {
+      setBuildStatus('Generating game code with Claude Opus 4.5...');
+      
+      const response = await fetch('/api/agent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: `Create a complete ${selectedTemplate.title} game called "${gameName}" with the following concept: ${selectedTemplate.dmiConcept}. 
+          
+Include these game elements:
+- Collectibles: ${selectedTemplate.collectibles.join(', ')}
+- Obstacles: ${selectedTemplate.obstacles.join(', ')}
+- Power-ups: ${selectedTemplate.powerUps.join(', ')}
+
+Use DMI Tools branding with colors: Red (#A62022), Black (#222222), White background.
+Make it mobile-friendly with touch controls.`,
+          currentCode: '<!DOCTYPE html><html><head><title>Game</title></head><body></body></html>',
+          config: { 
+            gameName,
+            template: selectedTemplate.id,
+            colors: { primary: '#A62022', secondary: '#222222' }
+          },
+          model: 'opus'
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.status === 'success' && data.code) {
+        setBuildStatus('Game built successfully! Opening preview...');
+        // Store the game code and redirect to preview
+        localStorage.setItem('dmi-game-preview', data.code);
+        localStorage.setItem('dmi-game-name', gameName);
+        setStep(3);
+      } else {
+        setBuildStatus('Build failed: ' + (data.message || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Build error:', error);
+      setBuildStatus('Build failed: Network error');
+    } finally {
+      setIsBuilding(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-dmi-gray">
-      {/* Simple Header */}
+      {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="container-dmi py-4">
           <div className="flex items-center justify-between">
@@ -23,7 +98,7 @@ export default function V2CreatePage() {
       {/* Main Content */}
       <main className="flex-1 py-8">
         <div className="container-dmi">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             {/* Page Header */}
             <div className="mb-8">
               <h1 className="font-display text-3xl md:text-4xl text-dmi-black mb-2">
@@ -37,76 +112,255 @@ export default function V2CreatePage() {
             {/* Step Indicator */}
             <div className="flex items-center gap-4 mb-8">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-dmi-red text-white flex items-center justify-center font-ui font-bold text-sm">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-ui font-bold text-sm ${
+                  step >= 1 ? 'bg-dmi-red text-white' : 'bg-gray-300 text-gray-500'
+                }`}>
                   1
                 </div>
-                <span className="font-ui text-sm font-medium text-dmi-black">
+                <span className={`font-ui text-sm font-medium ${step >= 1 ? 'text-dmi-black' : 'text-gray-500'}`}>
                   Select Template
                 </span>
               </div>
               <div className="flex-1 h-px bg-gray-300" />
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-gray-300 text-gray-500 flex items-center justify-center font-ui font-bold text-sm">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-ui font-bold text-sm ${
+                  step >= 2 ? 'bg-dmi-red text-white' : 'bg-gray-300 text-gray-500'
+                }`}>
                   2
                 </div>
-                <span className="font-ui text-sm font-medium text-gray-500">
+                <span className={`font-ui text-sm font-medium ${step >= 2 ? 'text-dmi-black' : 'text-gray-500'}`}>
                   Customize
                 </span>
               </div>
               <div className="flex-1 h-px bg-gray-300" />
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-gray-300 text-gray-500 flex items-center justify-center font-ui font-bold text-sm">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-ui font-bold text-sm ${
+                  step >= 3 ? 'bg-dmi-red text-white' : 'bg-gray-300 text-gray-500'
+                }`}>
                   3
                 </div>
-                <span className="font-ui text-sm font-medium text-gray-500">
-                  Publish
+                <span className={`font-ui text-sm font-medium ${step >= 3 ? 'text-dmi-black' : 'text-gray-500'}`}>
+                  Preview
                 </span>
               </div>
             </div>
 
-            {/* Template Selection Grid - Placeholder */}
-            <div className="bg-white rounded-lg p-6 md:p-8 shadow-sm">
-              <h2 className="font-display text-xl text-dmi-black mb-6">
-                Select a Game Template
-              </h2>
+            {/* Step 1: Template Selection */}
+            {step === 1 && (
+              <div className="bg-white rounded-lg p-6 md:p-8 shadow-sm">
+                <h2 className="font-display text-xl text-dmi-black mb-6">
+                  Select a Game Template ({gameTemplates.length} available)
+                </h2>
 
-              {/* Grid of template cards - to be implemented */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div
-                    key={i}
-                    className="card-dmi p-4 cursor-pointer group"
-                  >
-                    <div className="aspect-video bg-dmi-gray rounded mb-3 flex items-center justify-center">
-                      <span className="font-ui text-gray-400 text-sm">
-                        Preview
-                      </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {gameTemplates.map((template) => (
+                    <div
+                      key={template.id}
+                      onClick={() => handleSelectTemplate(template)}
+                      className={`card-dmi cursor-pointer group transition-all ${
+                        selectedTemplate?.id === template.id 
+                          ? 'ring-2 ring-dmi-red shadow-lg' 
+                          : 'hover:shadow-md'
+                      }`}
+                    >
+                      <div className={`aspect-video bg-gradient-to-br ${template.color} rounded-t-lg flex items-center justify-center relative overflow-hidden`}>
+                        <span className="text-5xl drop-shadow-lg">{template.icon}</span>
+                        {selectedTemplate?.id === template.id && (
+                          <div className="absolute top-2 right-2 w-6 h-6 bg-dmi-red text-white rounded-full flex items-center justify-center">
+                            ✓
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-4">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-ui text-xs text-dmi-red font-medium uppercase">
+                            {template.category}
+                          </span>
+                          <span className="font-ui text-xs text-gray-400">
+                            #{template.number}
+                          </span>
+                        </div>
+                        <h3 className="font-ui font-semibold text-dmi-black group-hover:text-dmi-red transition-colors">
+                          {template.dmiTitle}
+                        </h3>
+                        <p className="font-body text-sm text-dmi-gray mt-1 line-clamp-2">
+                          {template.description}
+                        </p>
+                      </div>
                     </div>
-                    <h3 className="font-ui font-semibold text-dmi-black group-hover:text-dmi-red transition-colors">
-                      Template {i}
-                    </h3>
-                    <p className="font-body text-sm text-dmi-gray mt-1">
-                      Brief description of the game template.
-                    </p>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* Step 2: Customize */}
+            {step === 2 && selectedTemplate && (
+              <div className="bg-white rounded-lg p-6 md:p-8 shadow-sm">
+                <h2 className="font-display text-xl text-dmi-black mb-6">
+                  Customize Your Game
+                </h2>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* Selected Template Preview */}
+                  <div>
+                    <div className={`aspect-video bg-gradient-to-br ${selectedTemplate.color} rounded-lg flex items-center justify-center mb-4`}>
+                      <span className="text-8xl drop-shadow-lg">{selectedTemplate.icon}</span>
+                    </div>
+                    <h3 className="font-display text-lg text-dmi-black">{selectedTemplate.dmiTitle}</h3>
+                    <p className="font-body text-sm text-dmi-gray mt-2">{selectedTemplate.dmiConcept}</p>
+                  </div>
+
+                  {/* Customization Options */}
+                  <div className="space-y-6">
+                    <div>
+                      <label className="font-ui text-sm font-medium text-dmi-black block mb-2">
+                        Game Name
+                      </label>
+                      <input
+                        type="text"
+                        value={gameName}
+                        onChange={(e) => setGameName(e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-dmi-red font-body"
+                        placeholder="Enter game name"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="font-ui text-sm font-medium text-dmi-black block mb-2">
+                        Game Elements
+                      </label>
+                      <div className="space-y-3">
+                        <div className="bg-green-50 p-3 rounded-lg">
+                          <h4 className="font-ui text-xs font-semibold text-green-700 mb-1">Collectibles</h4>
+                          <p className="font-body text-sm text-green-600">{selectedTemplate.collectibles.join(', ')}</p>
+                        </div>
+                        <div className="bg-red-50 p-3 rounded-lg">
+                          <h4 className="font-ui text-xs font-semibold text-red-700 mb-1">Obstacles</h4>
+                          <p className="font-body text-sm text-red-600">{selectedTemplate.obstacles.join(', ')}</p>
+                        </div>
+                        <div className="bg-purple-50 p-3 rounded-lg">
+                          <h4 className="font-ui text-xs font-semibold text-purple-700 mb-1">Power-ups</h4>
+                          <p className="font-body text-sm text-purple-600">{selectedTemplate.powerUps.join(', ')}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">🧠</span>
+                        <div>
+                          <h4 className="font-ui font-semibold text-dmi-black text-sm">Powered by Claude Opus 4.5</h4>
+                          <p className="font-body text-xs text-gray-500">AI will generate a complete, playable game</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {buildStatus && (
+                      <div className={`p-4 rounded-lg ${
+                        buildStatus.includes('failed') ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-700'
+                      }`}>
+                        <div className="flex items-center gap-3">
+                          {isBuilding && (
+                            <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                          )}
+                          <span className="font-ui text-sm">{buildStatus}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Preview */}
+            {step === 3 && (
+              <div className="bg-white rounded-lg p-6 md:p-8 shadow-sm">
+                <h2 className="font-display text-xl text-dmi-black mb-6">
+                  🎉 Game Built Successfully!
+                </h2>
+                
+                <div className="text-center py-8">
+                  <div className="text-6xl mb-4">🎮</div>
+                  <h3 className="font-display text-2xl text-dmi-black mb-2">{gameName}</h3>
+                  <p className="font-body text-dmi-gray mb-6">Your game has been created and is ready to preview.</p>
+                  
+                  <div className="flex flex-wrap justify-center gap-4">
+                    <button
+                      onClick={() => {
+                        const code = localStorage.getItem('dmi-game-preview');
+                        if (code) {
+                          const newWindow = window.open('', '_blank');
+                          if (newWindow) {
+                            newWindow.document.write(code);
+                            newWindow.document.close();
+                          }
+                        }
+                      }}
+                      className="btn-dmi-primary"
+                    >
+                      🎮 Play Game
+                    </button>
+                    <button
+                      onClick={() => {
+                        const code = localStorage.getItem('dmi-game-preview');
+                        if (code) {
+                          const blob = new Blob([code], { type: 'text/html' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = `${gameName.toLowerCase().replace(/\s+/g, '-')}.html`;
+                          a.click();
+                        }
+                      }}
+                      className="btn-dmi-secondary"
+                    >
+                      📥 Download HTML
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Action Buttons */}
             <div className="flex items-center justify-between mt-8">
-              <a
-                href="/"
-                className="btn-dmi-secondary"
-              >
-                Cancel
-              </a>
-              <button
-                className="btn-dmi-primary"
-                disabled
-              >
-                Continue
-              </button>
+              {step > 1 ? (
+                <button
+                  onClick={() => setStep(step - 1)}
+                  className="btn-dmi-secondary"
+                  disabled={isBuilding}
+                >
+                  ← Back
+                </button>
+              ) : (
+                <a href="/" className="btn-dmi-secondary">
+                  Cancel
+                </a>
+              )}
+              
+              {step < 3 && (
+                <button
+                  onClick={handleContinue}
+                  className="btn-dmi-primary"
+                  disabled={(step === 1 && !selectedTemplate) || isBuilding}
+                >
+                  {isBuilding ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin inline-block mr-2" />
+                      Building...
+                    </>
+                  ) : step === 1 ? (
+                    'Continue →'
+                  ) : (
+                    '🚀 Build Game'
+                  )}
+                </button>
+              )}
+              
+              {step === 3 && (
+                <a href="/" className="btn-dmi-primary">
+                  Create Another Game
+                </a>
+              )}
             </div>
           </div>
         </div>
