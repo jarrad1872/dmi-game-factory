@@ -15,15 +15,15 @@ interface AgentResponse {
   tokensUsed?: number;
 }
 
-// Model configurations for future Clawdbot integration
+// Model configurations - using Claude Max proxy
 const MODEL_CONFIG = {
   opus: {
-    name: 'claude-opus-4-5',
+    name: 'claude-opus-4',
     maxTokens: 16000,
     temperature: 0.7,
   },
   kimi: {
-    name: 'kimi-k2',
+    name: 'claude-sonnet-4',  // Use Sonnet for fast/cheap option
     maxTokens: 8000,
     temperature: 0.5,
   }
@@ -62,23 +62,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: Wire up to actual Clawdbot API
-    // For now, check if we have Clawdbot integration
-    const clawdbotUrl = process.env.CLAWDBOT_API_URL;
-    const clawdbotToken = process.env.CLAWDBOT_API_TOKEN;
+    // Claude Max API Proxy URL
+    const apiUrl = process.env.CLAUDE_PROXY_URL || 'https://ensuring-apollo-trees-renew.trycloudflare.com';
 
-    if (clawdbotUrl && clawdbotToken) {
-      // Real Clawdbot integration
-      try {
-        const response = await fetch(`${clawdbotUrl}/api/agent/code`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${clawdbotToken}`,
-          },
-          body: JSON.stringify({
-            systemPrompt: SYSTEM_PROMPT,
-            userPrompt: `Current game config: ${JSON.stringify(config)}
+    try {
+      const modelConfig = MODEL_CONFIG[model];
+      
+      const response = await fetch(`${apiUrl}/v1/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: modelConfig.name,
+          max_tokens: modelConfig.maxTokens,
+          temperature: modelConfig.temperature,
+          messages: [
+            {
+              role: 'system',
+              content: SYSTEM_PROMPT,
+            },
+            {
+              role: 'user',
+              content: `Current game config: ${JSON.stringify(config)}
 
 Current code:
 \`\`\`html
@@ -88,29 +94,45 @@ ${currentCode}
 User request: ${prompt}
 
 Return the complete modified HTML code:`,
-            model: MODEL_CONFIG[model].name,
-            maxTokens: MODEL_CONFIG[model].maxTokens,
-            temperature: MODEL_CONFIG[model].temperature,
-          }),
-        });
+            },
+          ],
+        }),
+      });
 
-        if (response.ok) {
-          const data = await response.json();
-          return NextResponse.json({
-            code: data.code,
-            status: 'success',
-            message: `${model === 'opus' ? '🧠 Opus' : '⚡ Kimi'} made your changes!`,
-            tokensUsed: data.tokensUsed,
-          });
+      if (response.ok) {
+        const data = await response.json();
+        const content = data.choices?.[0]?.message?.content || '';
+        
+        // Extract HTML code from response (may be wrapped in markdown code blocks)
+        let code = content;
+        const htmlMatch = content.match(/```html\n([\s\S]*?)\n```/);
+        if (htmlMatch) {
+          code = htmlMatch[1];
+        } else {
+          // Try without language specifier
+          const codeMatch = content.match(/```\n([\s\S]*?)\n```/);
+          if (codeMatch) {
+            code = codeMatch[1];
+          }
         }
-      } catch (e) {
-        console.error('Clawdbot API error:', e);
-        // Fall through to placeholder
+        
+        return NextResponse.json({
+          code: code.trim(),
+          status: 'success',
+          message: `${model === 'opus' ? '🧠 Opus' : '⚡ Sonnet'} made your changes!`,
+          tokensUsed: data.usage?.total_tokens || 0,
+        });
+      } else {
+        const errorText = await response.text();
+        console.error('Claude proxy error:', response.status, errorText);
+        throw new Error(`API error: ${response.status}`);
       }
+    } catch (e) {
+      console.error('Claude proxy API error:', e);
+      // Fall through to placeholder
     }
 
     // Placeholder response for demo/development
-    // This simulates what the agent would return
     const placeholderResponse = await generatePlaceholderResponse(prompt, currentCode, config, model);
     
     return NextResponse.json(placeholderResponse);
@@ -141,34 +163,29 @@ async function generatePlaceholderResponse(
 
   // Simple pattern matching for common requests
   if (promptLower.includes('faster') || promptLower.includes('speed')) {
-    // Increase speed values
     modifiedCode = currentCode
       .replace(/setVelocityY\(-(\d+)\)/g, (match, num) => `setVelocityY(-${Math.round(parseInt(num) * 1.5)})`)
       .replace(/setVelocityX\(-(\d+)\)/g, (match, num) => `setVelocityX(-${Math.round(parseInt(num) * 1.3)})`);
     message = `⚡ Increased movement speed by 50%!`;
   } 
   else if (promptLower.includes('slower') || promptLower.includes('easier')) {
-    // Decrease speed values
     modifiedCode = currentCode
       .replace(/setVelocityY\(-(\d+)\)/g, (match, num) => `setVelocityY(-${Math.round(parseInt(num) * 0.7)})`)
       .replace(/setVelocityX\(-(\d+)\)/g, (match, num) => `setVelocityX(-${Math.round(parseInt(num) * 0.8)})`);
     message = `🐢 Reduced speed for easier gameplay!`;
   }
   else if (promptLower.includes('bigger') || promptLower.includes('larger')) {
-    // Increase scale values
     modifiedCode = currentCode
       .replace(/setScale\((\d+\.?\d*)\)/g, (match, num) => `setScale(${(parseFloat(num) * 1.5).toFixed(2)})`);
     message = `📐 Made game elements 50% bigger!`;
   }
   else if (promptLower.includes('score') && promptLower.includes('double')) {
-    // Double score increments
     modifiedCode = currentCode
       .replace(/this\.score \+= (\d+)/g, (match, num) => `this.score += ${parseInt(num) * 2}`)
       .replace(/this\.score\+\+/g, 'this.score += 2');
     message = `💰 Doubled all score values!`;
   }
   else if (promptLower.includes('shake') || promptLower.includes('screen shake')) {
-    // Add screen shake if not present
     if (!currentCode.includes('cameras.main.shake')) {
       modifiedCode = currentCode.replace(
         /this\.gameOver = true;/g,
@@ -180,15 +197,13 @@ async function generatePlaceholderResponse(
     }
   }
   else if (promptLower.includes('particle') || promptLower.includes('effect')) {
-    // Already have particle effects in most templates
     message = `✨ Particle effects are already implemented! Check the collect() function.`;
   }
   else if (promptLower.includes('color') || promptLower.includes('theme')) {
     message = `🎨 Colors are controlled by the theme selector in Config mode. Switch to Config tab to change colors!`;
   }
   else {
-    // For unrecognized prompts, return original code with a helpful message
-    message = `🔧 This is a demo mode. Connect to Clawdbot API for full AI capabilities!\n\nYour request: "${prompt}"\n\nTry: "make it faster", "double the score", or "add screen shake"`;
+    message = `🔧 Demo mode - Claude proxy unavailable. Try: "make it faster", "double the score", or "add screen shake"`;
   }
 
   return {
@@ -196,20 +211,33 @@ async function generatePlaceholderResponse(
     status: 'success',
     message: model === 'opus' 
       ? `🧠 Opus: ${message}` 
-      : `⚡ Kimi: ${message}`,
+      : `⚡ Sonnet: ${message}`,
     tokensUsed: model === 'opus' ? 2500 : 800,
   };
 }
 
 // GET endpoint for status check
 export async function GET() {
-  const hasClawdbot = !!(process.env.CLAWDBOT_API_URL && process.env.CLAWDBOT_API_TOKEN);
+  const proxyUrl = process.env.CLAUDE_PROXY_URL || 'https://ensuring-apollo-trees-renew.trycloudflare.com';
+  
+  // Check if proxy is accessible
+  let proxyConnected = false;
+  try {
+    const response = await fetch(`${proxyUrl}/health`, { 
+      method: 'GET',
+      signal: AbortSignal.timeout(5000) 
+    });
+    proxyConnected = response.ok;
+  } catch {
+    proxyConnected = false;
+  }
   
   return NextResponse.json({
     status: 'ready',
     models: ['opus', 'kimi'],
-    clawdbotConnected: hasClawdbot,
-    capabilities: hasClawdbot 
+    proxyConnected,
+    proxyUrl,
+    capabilities: proxyConnected 
       ? ['full-generation', 'code-modification', 'bug-fixing', 'feature-addition']
       : ['demo-mode', 'simple-modifications'],
   });
