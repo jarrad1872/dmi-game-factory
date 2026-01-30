@@ -1,28 +1,40 @@
-# DMI Game Factory 🎮
+# DMI Game Factory 🏭
 
-A web-based game creation tool for DMI Tools Corp. Create, customize, and deploy arcade games with your product branding.
+A cloud-based arcade game creation tool for DMI Tools Corp. Create engaging promotional games featuring DMI products with just a few clicks.
 
-![DMI Game Factory](https://via.placeholder.com/800x400/0a1628/FF6B00?text=DMI+Game+Factory)
+![DMI Game Factory](https://img.shields.io/badge/DMI-Game%20Factory-orange?style=for-the-badge)
 
 ## Features
 
-- **🔐 Password-Protected Access** - Simple shared password authentication
-- **📋 Build Management** - Create, clone, and delete game builds
-- **🎨 Visual Editor** - Split-pane editor with live preview
-- **📱 Mobile Responsive** - Works on all devices
-- **🚀 One-Click Export** - Download games as standalone HTML files
+- **🎮 3 Game Templates**: Flappy Clone, Endless Runner, Match-3 Puzzle
+- **🎨 4 Visual Themes**: Industrial, Construction, Tech, Nature  
+- **⚙️ DMI Product Integration**: Feature Core Bits, Slurry Rings, Diamond Blades, Drill Motors
+- **📱 Live Preview**: Test games in mobile or desktop view
+- **💾 Project Management**: Save drafts, clone builds, publish when ready
+- **📤 Export**: Download games as standalone HTML files
+- **🔐 Simple Auth**: Password-protected access
 
-## Game Templates
+## Tech Stack
 
-| Template | Description |
-|----------|-------------|
-| 🐦 Flappy Clone | Tap to fly, avoid obstacles |
-| 🏃 Endless Runner | Auto-run, tap to jump |
-| 💎 Match-3 | Swap tiles to match 3+ |
+- **Next.js 14** - App Router with React Server Components
+- **Tailwind CSS** - Utility-first styling with custom theme
+- **Phaser.js** - Professional game engine for web games
+- **TypeScript** - Full type safety
 
-## Quick Start
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+
+### Installation
 
 ```bash
+# Clone the repo
+git clone https://github.com/jarrad1872/dmi-game-factory.git
+cd dmi-game-factory
+
 # Install dependencies
 npm install
 
@@ -34,126 +46,77 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## Configuration
-
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `FACTORY_PASSWORD` | Password to access the factory | `dmi2024` |
-
-### DMI Products
-
-Games can feature any combination of:
-- 🔩 Drilling Tools
-- ✂️ Cutting Equipment
-- 📏 Measuring Devices
-- 🔧 Fastening Systems
-- 🦺 Safety Gear
-- ⚡ Power Tools
-
-### Themes
-
-| Theme | Colors |
-|-------|--------|
-| Industrial | Orange + Blue |
-| Construction | Orange + Yellow |
-| Tech | Cyan + Purple |
-| Nature | Green + Lime |
-
-## Deployment
-
-### Vercel (Recommended)
-
-1. Push to GitHub
-2. Import project in Vercel
-3. Add `FACTORY_PASSWORD` environment variable
-4. Deploy!
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
-
-### Other Platforms
-
-```bash
-# Build for production
-npm run build
-
-# Start production server
-npm start
+```env
+FACTORY_PASSWORD=your-secure-password
 ```
 
-## Tech Stack
+### Building for Production
 
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS
-- **Game Engine**: Phaser.js 3
-- **Storage**: localStorage (client-side)
-- **Auth**: Cookie-based sessions
+```bash
+npm run build
+npm run start
+```
+
+## Usage
+
+1. **Login** with the factory password
+2. **Create** a new game and select a template
+3. **Configure** your game:
+   - Choose a visual theme
+   - Select DMI products to feature
+   - Set game difficulty
+   - Add your call-to-action
+4. **Preview** and test your game
+5. **Export** or **Publish** when ready
+
+## Game Templates
+
+### Flappy Clone 🐦
+Tap to fly, avoid obstacles, collect bonus stars. Great for quick engagement.
+
+### Endless Runner 🏃
+Auto-running action, jump to avoid obstacles, collect coins. Fast-paced fun.
+
+### Match-3 Puzzle 💎
+Strategic tile-matching game. Perfect for longer play sessions.
 
 ## Project Structure
 
 ```
 dmi-game-factory/
 ├── app/
-│   ├── page.tsx              # Login page
-│   ├── dashboard/page.tsx    # Build management
-│   ├── editor/[id]/page.tsx  # Game editor
-│   └── api/
-│       ├── auth/route.ts     # Authentication
-│       ├── preview/route.ts  # Preview generation
-│       └── export/route.ts   # Game export
-├── components/
-│   ├── BuildCard.tsx         # Game build card
-│   ├── ConfigPanel.tsx       # Editor config panel
-│   ├── PreviewPane.tsx       # Live preview
-│   └── TemplateSelector.tsx  # Template chooser
+│   ├── api/           # API routes (auth, preview, export)
+│   ├── dashboard/     # Project management page
+│   ├── editor/[id]/   # Game editor page
+│   └── page.tsx       # Login page
+├── components/        # React components
 ├── lib/
-│   ├── types.ts              # TypeScript types
-│   ├── storage.ts            # localStorage helpers
-│   ├── auth.ts               # Auth utilities
-│   └── templates/
-│       └── generator.ts      # Game HTML generator
-└── public/
+│   ├── auth.ts        # Authentication utilities
+│   ├── storage.ts     # Local storage management
+│   ├── types.ts       # TypeScript types
+│   └── templates/     # Game template generators
+└── public/            # Static assets
 ```
 
-## Usage Guide
+## Deployment
 
-### Creating a Game
+### Vercel (Recommended)
 
-1. Log in with the factory password
-2. Click "New Game" on the dashboard
-3. Enter a name for your game
-4. Choose a template (Flappy, Runner, or Match-3)
-5. Customize settings in the config panel
-6. Watch the live preview update in real-time
-7. Click "Export" to download as HTML
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/jarrad1872/dmi-game-factory)
 
-### Customization Options
+1. Import the GitHub repo
+2. Add `FACTORY_PASSWORD` environment variable
+3. Deploy!
 
-- **Game Title**: Displayed in the game
-- **Template**: Choose game mechanics
-- **Theme**: Color scheme
-- **Products**: Featured DMI products (shown as icons)
-- **CTA Button**: Text and link for call-to-action
-- **Difficulty**: 1-10 scale affects game speed
-- **Branding**: Toggle DMI branding display
+### Other Platforms
 
-### Exporting Games
-
-Exported games are:
-- Self-contained HTML files
-- Include Phaser.js from CDN
-- Mobile-responsive
-- Ready to host anywhere
-
-## Branding
-
-DMI Tools Corp brand colors:
-- **Orange**: `#FF6B00`
-- **Blue**: `#4FC3F7`
-- **Dark**: `#0a1628`
+The app can be deployed to any platform supporting Next.js:
+- Netlify
+- Railway
+- AWS Amplify
+- Self-hosted with Node.js
 
 ## License
 
