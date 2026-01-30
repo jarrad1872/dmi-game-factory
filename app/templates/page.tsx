@@ -79,7 +79,7 @@ export default function V2TemplatesPage() {
                 className="card-dmi group cursor-pointer"
                 onClick={() => setSelectedTemplate(template)}
               >
-                <div className={`aspect-[4/3] bg-gradient-to-br ${template.color} relative overflow-hidden`}>
+                <div className="aspect-[4/3] relative overflow-hidden bg-gray-100">
                   {/* Game Number Badge */}
                   <div className="absolute top-3 left-3 w-8 h-8 bg-white text-dmi-red rounded-full flex items-center justify-center font-ui font-bold text-sm z-10 shadow">
                     {template.number}
@@ -92,12 +92,18 @@ export default function V2TemplatesPage() {
                     </span>
                   </div>
 
-                  {/* Icon Preview */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-6xl group-hover:scale-125 transition-transform duration-300 drop-shadow-lg">
-                      {template.icon}
-                    </span>
-                  </div>
+                  {/* Preview Image */}
+                  {template.previewUrl ? (
+                    <img
+                      src={template.previewUrl}
+                      alt={template.dmiTitle}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className={`w-full h-full bg-gradient-to-br ${template.color} flex items-center justify-center`}>
+                      <span className="text-6xl drop-shadow-lg">{template.icon}</span>
+                    </div>
+                  )}
                   
                   {/* Hover overlay */}
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">

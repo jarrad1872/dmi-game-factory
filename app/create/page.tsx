@@ -163,8 +163,18 @@ Make it mobile-friendly with touch controls.`,
                           : 'hover:shadow-md'
                       }`}
                     >
-                      <div className={`aspect-video bg-gradient-to-br ${template.color} rounded-t-lg flex items-center justify-center relative overflow-hidden`}>
-                        <span className="text-5xl drop-shadow-lg">{template.icon}</span>
+                      <div className="aspect-video rounded-t-lg relative overflow-hidden bg-gray-100">
+                        {template.previewUrl ? (
+                          <img
+                            src={template.previewUrl}
+                            alt={template.dmiTitle}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className={`w-full h-full bg-gradient-to-br ${template.color} flex items-center justify-center`}>
+                            <span className="text-5xl drop-shadow-lg">{template.icon}</span>
+                          </div>
+                        )}
                         {selectedTemplate?.id === template.id && (
                           <div className="absolute top-2 right-2 w-6 h-6 bg-dmi-red text-white rounded-full flex items-center justify-center">
                             ✓
@@ -203,8 +213,18 @@ Make it mobile-friendly with touch controls.`,
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   {/* Selected Template Preview */}
                   <div>
-                    <div className={`aspect-video bg-gradient-to-br ${selectedTemplate.color} rounded-lg flex items-center justify-center mb-4`}>
-                      <span className="text-8xl drop-shadow-lg">{selectedTemplate.icon}</span>
+                    <div className="aspect-video rounded-lg overflow-hidden mb-4 bg-gray-100">
+                      {selectedTemplate.previewUrl ? (
+                        <img
+                          src={selectedTemplate.previewUrl}
+                          alt={selectedTemplate.dmiTitle}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className={`w-full h-full bg-gradient-to-br ${selectedTemplate.color} flex items-center justify-center`}>
+                          <span className="text-8xl drop-shadow-lg">{selectedTemplate.icon}</span>
+                        </div>
+                      )}
                     </div>
                     <h3 className="font-display text-lg text-dmi-black">{selectedTemplate.dmiTitle}</h3>
                     <p className="font-body text-sm text-dmi-gray mt-2">{selectedTemplate.dmiConcept}</p>

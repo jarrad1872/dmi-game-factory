@@ -16,6 +16,8 @@ export interface GameTemplate {
   prdFile: string;
   icon: string;
   color: string;
+  previewUrl?: string;
+  previewType?: 'image' | 'gif' | 'svg';
 }
 
 export const gameTemplates: GameTemplate[] = [
@@ -35,7 +37,9 @@ export const gameTemplates: GameTemplate[] = [
     referenceGames: ['Subway Surfers', 'Temple Run', 'Jetpack Joyride'],
     prdFile: '01-endless-runner.md',
     icon: '🏃',
-    color: 'from-orange-500 to-red-600'
+    color: 'from-orange-500 to-red-600',
+    previewUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23f97316'/%3E%3Cstop offset='100%25' stop-color='%23dc2626'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3Ctext x='200' y='160' font-size='120' text-anchor='middle'%3E🏃%3C/text%3E%3Ctext x='200' y='240' font-family='sans-serif' font-size='20' fill='white' text-anchor='middle' font-weight='bold'%3ECore Runner Pro%3C/text%3E%3C/svg%3E",
+    previewType: 'svg'
   },
   {
     id: 'match3-puzzle',
@@ -53,7 +57,9 @@ export const gameTemplates: GameTemplate[] = [
     referenceGames: ['Candy Crush', 'Bejeweled', 'Gardenscapes'],
     prdFile: '02-match3-puzzle.md',
     icon: '💎',
-    color: 'from-purple-500 to-pink-600'
+    color: 'from-purple-500 to-pink-600',
+    previewUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23a855f7'/%3E%3Cstop offset='100%25' stop-color='%23db2777'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3Ctext x='200' y='160' font-size='120' text-anchor='middle'%3E💎%3C/text%3E%3Ctext x='200' y='240' font-family='sans-serif' font-size='20' fill='white' text-anchor='middle' font-weight='bold'%3EDiamond Match Pro%3C/text%3E%3C/svg%3E",
+    previewType: 'svg'
   },
   {
     id: 'stacking-tower',
@@ -71,7 +77,9 @@ export const gameTemplates: GameTemplate[] = [
     referenceGames: ['Stack', 'Tower Bloxx', 'Stacky Dash'],
     prdFile: '03-stacking-tower.md',
     icon: '🏗️',
-    color: 'from-blue-500 to-cyan-600'
+    color: 'from-blue-500 to-cyan-600',
+    previewUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%233b82f6'/%3E%3Cstop offset='100%25' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3Ctext x='200' y='160' font-size='120' text-anchor='middle'%3E🏗️%3C/text%3E%3Ctext x='200' y='240' font-family='sans-serif' font-size='20' fill='white' text-anchor='middle' font-weight='bold'%3ETower Stack Pro%3C/text%3E%3C/svg%3E",
+    previewType: 'svg'
   },
   {
     id: 'timing-rhythm',
@@ -89,7 +97,9 @@ export const gameTemplates: GameTemplate[] = [
     referenceGames: ['Piano Tiles', 'Tiles Hop', 'Beat Saber'],
     prdFile: '04-timing-rhythm.md',
     icon: '🎵',
-    color: 'from-indigo-500 to-purple-600'
+    color: 'from-indigo-500 to-purple-600',
+    previewUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236366f1'/%3E%3Cstop offset='100%25' stop-color='%239333ea'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3Ctext x='200' y='160' font-size='120' text-anchor='middle'%3E🎵%3C/text%3E%3Ctext x='200' y='240' font-family='sans-serif' font-size='20' fill='white' text-anchor='middle' font-weight='bold'%3ERhythm Drill Master%3C/text%3E%3C/svg%3E",
+    previewType: 'svg'
   },
   {
     id: 'idle-clicker',
@@ -107,7 +117,9 @@ export const gameTemplates: GameTemplate[] = [
     referenceGames: ['Cookie Clicker', 'AdVenture Capitalist', 'Egg Inc'],
     prdFile: '05-idle-clicker.md',
     icon: '🏭',
-    color: 'from-green-500 to-emerald-600'
+    color: 'from-green-500 to-emerald-600',
+    previewUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2322c55e'/%3E%3Cstop offset='100%25' stop-color='%23059669'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3Ctext x='200' y='160' font-size='120' text-anchor='middle'%3E🏭%3C/text%3E%3Ctext x='200' y='240' font-family='sans-serif' font-size='18' fill='white' text-anchor='middle' font-weight='bold'%3EDiamond Empire Tycoon%3C/text%3E%3C/svg%3E",
+    previewType: 'svg'
   },
   {
     id: 'blade-master',
@@ -125,7 +137,9 @@ export const gameTemplates: GameTemplate[] = [
     referenceGames: ['Fruit Ninja', 'Slice It', 'Juice Cubes'],
     prdFile: '06-blade-master.md',
     icon: '⚔️',
-    color: 'from-red-500 to-orange-600'
+    color: 'from-red-500 to-orange-600',
+    previewUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ef4444'/%3E%3Cstop offset='100%25' stop-color='%23ea580c'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3Ctext x='200' y='160' font-size='120' text-anchor='middle'%3E⚔️%3C/text%3E%3Ctext x='200' y='240' font-family='sans-serif' font-size='20' fill='white' text-anchor='middle' font-weight='bold'%3EBlade Master Pro%3C/text%3E%3C/svg%3E",
+    previewType: 'svg'
   },
   {
     id: 'drill-dive',
@@ -143,7 +157,9 @@ export const gameTemplates: GameTemplate[] = [
     referenceGames: ['Flappy Bird', 'Helix Jump', 'Diving Duck'],
     prdFile: '07-drill-dive.md',
     icon: '🕳️',
-    color: 'from-amber-500 to-yellow-600'
+    color: 'from-amber-500 to-yellow-600',
+    previewUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23f59e0b'/%3E%3Cstop offset='100%25' stop-color='%23ca8a04'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3Ctext x='200' y='160' font-size='120' text-anchor='middle'%3E🕳️%3C/text%3E%3Ctext x='200' y='240' font-family='sans-serif' font-size='20' fill='white' text-anchor='middle' font-weight='bold'%3ECore Drill Dive%3C/text%3E%3C/svg%3E",
+    previewType: 'svg'
   },
   {
     id: 'site-hopper',
@@ -161,7 +177,9 @@ export const gameTemplates: GameTemplate[] = [
     referenceGames: ['Crossy Road', 'Frogger', 'Hoppy Road'],
     prdFile: '08-site-hopper.md',
     icon: '🚧',
-    color: 'from-yellow-500 to-orange-500'
+    color: 'from-yellow-500 to-orange-500',
+    previewUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23eab308'/%3E%3Cstop offset='100%25' stop-color='%23f97316'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3Ctext x='200' y='160' font-size='120' text-anchor='middle'%3E🚧%3C/text%3E%3Ctext x='200' y='240' font-family='sans-serif' font-size='20' fill='white' text-anchor='middle' font-weight='bold'%3EJob Site Hopper%3C/text%3E%3C/svg%3E",
+    previewType: 'svg'
   },
   {
     id: 'concrete-crusher',
@@ -179,7 +197,9 @@ export const gameTemplates: GameTemplate[] = [
     referenceGames: ['Brick Breaker', 'Arkanoid', 'Breakout'],
     prdFile: '09-concrete-crusher.md',
     icon: '🧱',
-    color: 'from-gray-500 to-slate-600'
+    color: 'from-gray-500 to-slate-600',
+    previewUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236b7280'/%3E%3Cstop offset='100%25' stop-color='%23475569'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3Ctext x='200' y='160' font-size='120' text-anchor='middle'%3E🧱%3C/text%3E%3Ctext x='200' y='240' font-family='sans-serif' font-size='18' fill='white' text-anchor='middle' font-weight='bold'%3EConcrete Crusher Pro%3C/text%3E%3C/svg%3E",
+    previewType: 'svg'
   },
   {
     id: 'target-practice',
@@ -197,7 +217,9 @@ export const gameTemplates: GameTemplate[] = [
     referenceGames: ['Duck Hunt', 'Shooting Arcade', 'Carnival Games'],
     prdFile: '10-target-practice.md',
     icon: '🎯',
-    color: 'from-red-600 to-rose-600'
+    color: 'from-red-600 to-rose-600',
+    previewUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23dc2626'/%3E%3Cstop offset='100%25' stop-color='%23e11d48'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3Ctext x='200' y='160' font-size='120' text-anchor='middle'%3E🎯%3C/text%3E%3Ctext x='200' y='240' font-family='sans-serif' font-size='18' fill='white' text-anchor='middle' font-weight='bold'%3EPrecision Driller%3C/text%3E%3C/svg%3E",
+    previewType: 'svg'
   },
   {
     id: 'memory-match',
@@ -215,7 +237,9 @@ export const gameTemplates: GameTemplate[] = [
     referenceGames: ['Memory Match', 'Concentration', 'Lumosity'],
     prdFile: '11-memory-match.md',
     icon: '🃏',
-    color: 'from-teal-500 to-cyan-600'
+    color: 'from-teal-500 to-cyan-600',
+    previewUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2314b8a6'/%3E%3Cstop offset='100%25' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3Ctext x='200' y='160' font-size='120' text-anchor='middle'%3E🃏%3C/text%3E%3Ctext x='200' y='240' font-family='sans-serif' font-size='20' fill='white' text-anchor='middle' font-weight='bold'%3ETool Match Pro%3C/text%3E%3C/svg%3E",
+    previewType: 'svg'
   },
   {
     id: 'sliding-puzzle-2048',
@@ -233,7 +257,9 @@ export const gameTemplates: GameTemplate[] = [
     referenceGames: ['2048', 'Threes', 'Drop7'],
     prdFile: '12-sliding-puzzle-2048.md',
     icon: '🔢',
-    color: 'from-amber-400 to-orange-500'
+    color: 'from-amber-400 to-orange-500',
+    previewUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fbbf24'/%3E%3Cstop offset='100%25' stop-color='%23f97316'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3Ctext x='200' y='160' font-size='120' text-anchor='middle'%3E🔢%3C/text%3E%3Ctext x='200' y='240' font-family='sans-serif' font-size='18' fill='white' text-anchor='middle' font-weight='bold'%3EDiamond Merge 2048%3C/text%3E%3C/svg%3E",
+    previewType: 'svg'
   },
   {
     id: 'word-game',
@@ -251,7 +277,9 @@ export const gameTemplates: GameTemplate[] = [
     referenceGames: ['Wordle', 'Scrabble', 'Words with Friends'],
     prdFile: '13-word-game.md',
     icon: '📝',
-    color: 'from-green-600 to-emerald-700'
+    color: 'from-green-600 to-emerald-700',
+    previewUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2316a34a'/%3E%3Cstop offset='100%25' stop-color='%23058555'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3Ctext x='200' y='160' font-size='120' text-anchor='middle'%3E📝%3C/text%3E%3Ctext x='200' y='240' font-family='sans-serif' font-size='20' fill='white' text-anchor='middle' font-weight='bold'%3EDMI Word Master%3C/text%3E%3C/svg%3E",
+    previewType: 'svg'
   },
   {
     id: 'quiz-trivia',
@@ -269,7 +297,9 @@ export const gameTemplates: GameTemplate[] = [
     referenceGames: ['Trivia Crack', 'QuizUp', 'Kahoot'],
     prdFile: '14-quiz-trivia.md',
     icon: '❓',
-    color: 'from-blue-600 to-indigo-700'
+    color: 'from-blue-600 to-indigo-700',
+    previewUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%232563eb'/%3E%3Cstop offset='100%25' stop-color='%234338ca'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3Ctext x='200' y='160' font-size='120' text-anchor='middle'%3E❓%3C/text%3E%3Ctext x='200' y='240' font-family='sans-serif' font-size='18' fill='white' text-anchor='middle' font-weight='bold'%3EDMI Knowledge Pro%3C/text%3E%3C/svg%3E",
+    previewType: 'svg'
   },
   {
     id: 'slot-machine',
@@ -287,7 +317,9 @@ export const gameTemplates: GameTemplate[] = [
     referenceGames: ['Slotomania', 'Jackpot Party', 'Vegas Slots'],
     prdFile: '16-slot-machine.md',
     icon: '🎰',
-    color: 'from-yellow-400 to-amber-500'
+    color: 'from-yellow-400 to-amber-500',
+    previewUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23facc15'/%3E%3Cstop offset='100%25' stop-color='%23f59e0b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3Ctext x='200' y='160' font-size='120' text-anchor='middle'%3E🎰%3C/text%3E%3Ctext x='200' y='240' font-family='sans-serif' font-size='18' fill='white' text-anchor='middle' font-weight='bold'%3EDMI Prize Spinner%3C/text%3E%3C/svg%3E",
+    previewType: 'svg'
   },
   {
     id: 'claw-machine',
@@ -305,7 +337,9 @@ export const gameTemplates: GameTemplate[] = [
     referenceGames: ['Clawee', 'Prize Claw', 'Arcade Claw'],
     prdFile: '17-claw-machine.md',
     icon: '🎪',
-    color: 'from-pink-500 to-rose-600'
+    color: 'from-pink-500 to-rose-600',
+    previewUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ec4899'/%3E%3Cstop offset='100%25' stop-color='%23e11d48'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3Ctext x='200' y='160' font-size='120' text-anchor='middle'%3E🎪%3C/text%3E%3Ctext x='200' y='240' font-family='sans-serif' font-size='20' fill='white' text-anchor='middle' font-weight='bold'%3EDMI Claw Master%3C/text%3E%3C/svg%3E",
+    previewType: 'svg'
   },
   {
     id: 'delivery-driving',
@@ -323,7 +357,9 @@ export const gameTemplates: GameTemplate[] = [
     referenceGames: ['Crazy Taxi', 'Delivery Dash', 'Uber Driver'],
     prdFile: '18-delivery-driving.md',
     icon: '🚚',
-    color: 'from-blue-500 to-sky-600'
+    color: 'from-blue-500 to-sky-600',
+    previewUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%233b82f6'/%3E%3Cstop offset='100%25' stop-color='%230ea5e9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='400' height='300'/%3E%3Ctext x='200' y='160' font-size='120' text-anchor='middle'%3E🚚%3C/text%3E%3Ctext x='200' y='240' font-family='sans-serif' font-size='18' fill='white' text-anchor='middle' font-weight='bold'%3EDMI Delivery Dash%3C/text%3E%3C/svg%3E",
+    previewType: 'svg'
   }
 ];
 
