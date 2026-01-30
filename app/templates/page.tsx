@@ -1,4 +1,14 @@
+'use client';
+
+import { useState } from 'react';
+import { gameTemplates, categories, getTemplatesByCategory, GameTemplate } from '@/lib/game-templates';
+
 export default function V2TemplatesPage() {
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedTemplate, setSelectedTemplate] = useState<GameTemplate | null>(null);
+  
+  const filteredTemplates = getTemplatesByCategory(selectedCategory);
+
   return (
     <div className="min-h-screen flex flex-col bg-dmi-white">
       {/* Simple Header */}
@@ -34,81 +44,227 @@ export default function V2TemplatesPage() {
               Game Templates
             </h1>
             <p className="font-body text-dmi-gray max-w-2xl">
-              Browse our collection of professional arcade-style games. 
-              Each template is designed with the DMI Tools brand in mind.
+              Browse our collection of {gameTemplates.length} professional arcade-style games. 
+              Each template features DMI Tools branding and real product integration.
             </p>
           </div>
 
-          {/* Category Filters - Placeholder */}
+          {/* Category Filters */}
           <div className="flex flex-wrap gap-2 mb-8">
-            {['All', 'Action', 'Puzzle', 'Arcade', 'Strategy'].map((category, i) => (
+            {categories.map((category) => (
               <button
                 key={category}
+                onClick={() => setSelectedCategory(category)}
                 className={`font-ui text-sm px-4 py-2 rounded-full border transition-colors ${
-                  i === 0
+                  selectedCategory === category
                     ? 'bg-dmi-red text-white border-dmi-red'
                     : 'bg-white text-dmi-black border-gray-300 hover:border-dmi-red'
                 }`}
               >
                 {category}
+                {category !== 'All' && (
+                  <span className="ml-1 text-xs opacity-70">
+                    ({gameTemplates.filter(t => t.category === category).length})
+                  </span>
+                )}
               </button>
             ))}
           </div>
 
-          {/* Templates Grid - Placeholder */}
+          {/* Templates Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
+            {filteredTemplates.map((template) => (
               <article
-                key={i}
-                className="card-dmi group"
+                key={template.id}
+                className="card-dmi group cursor-pointer"
+                onClick={() => setSelectedTemplate(template)}
               >
-                <div className="aspect-[4/3] bg-dmi-gray relative overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="font-ui text-gray-400">Game Preview</span>
+                <div className="aspect-[4/3] bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
+                  {/* Game Number Badge */}
+                  <div className="absolute top-3 left-3 w-8 h-8 bg-dmi-red text-white rounded-full flex items-center justify-center font-ui font-bold text-sm z-10">
+                    {template.number}
                   </div>
+                  
+                  {/* Category Badge */}
+                  <div className="absolute top-3 right-3 z-10">
+                    <span className="font-ui text-xs px-2 py-1 bg-white/90 backdrop-blur rounded text-dmi-black shadow">
+                      {template.category}
+                    </span>
+                  </div>
+
+                  {/* Placeholder Icon */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-4xl">🎮</span>
+                  </div>
+                  
                   {/* Hover overlay */}
                   <div className="absolute inset-0 bg-dmi-red/90 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <button className="btn-dmi-primary bg-white text-dmi-red border-white hover:bg-transparent hover:text-white">
-                      Preview
+                      View Details
                     </button>
                   </div>
                 </div>
+                
                 <div className="p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-ui font-semibold text-dmi-black">
-                      Game Template {i}
-                    </h3>
-                    <span className="font-ui text-xs px-2 py-1 bg-dmi-gray rounded text-dmi-black">
-                      Arcade
+                  <div className="mb-2">
+                    <span className="font-ui text-xs text-dmi-red font-medium uppercase tracking-wide">
+                      {template.dmiTitle}
                     </span>
                   </div>
-                  <p className="font-body text-sm text-dmi-gray line-clamp-2">
-                    A professional arcade game template with DMI branding and customizable features.
+                  <h3 className="font-ui font-semibold text-dmi-black mb-2">
+                    {template.title}
+                  </h3>
+                  <p className="font-body text-sm text-dmi-gray line-clamp-2 mb-3">
+                    {template.description}
                   </p>
-                  <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
-                    <span className="font-ui text-xs text-dmi-gray">
-                      Difficulty: Medium
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-ui text-dmi-gray bg-gray-100 px-2 py-1 rounded">
+                      {template.difficulty}
                     </span>
-                    <a
-                      href="/create"
-                      className="font-ui text-sm font-medium text-dmi-red hover:underline"
-                    >
-                      Use Template →
-                    </a>
+                    <span className="font-ui text-dmi-gray">
+                      ~{template.estimatedTime}
+                    </span>
                   </div>
                 </div>
               </article>
             ))}
           </div>
 
-          {/* Load More */}
-          <div className="text-center mt-12">
-            <button className="btn-dmi-secondary">
-              Load More Templates
-            </button>
-          </div>
+          {/* No Results */}
+          {filteredTemplates.length === 0 && (
+            <div className="text-center py-12">
+              <p className="font-body text-dmi-gray">
+                No templates found in this category.
+              </p>
+            </div>
+          )}
         </div>
       </main>
+
+      {/* Template Detail Modal */}
+      {selectedTemplate && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedTemplate(null)}
+        >
+          <div 
+            className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex items-start justify-between">
+                <div>
+                  <span className="font-ui text-xs text-dmi-red font-medium uppercase tracking-wide">
+                    Template #{selectedTemplate.number}
+                  </span>
+                  <h2 className="font-display text-2xl text-dmi-black mt-1">
+                    {selectedTemplate.dmiTitle}
+                  </h2>
+                  <p className="font-body text-dmi-gray mt-1">
+                    {selectedTemplate.title}
+                  </p>
+                </div>
+                <button 
+                  onClick={() => setSelectedTemplate(null)}
+                  className="text-gray-400 hover:text-dmi-black"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-6">
+              {/* DMI Concept */}
+              <div>
+                <h3 className="font-ui font-semibold text-dmi-black mb-2">DMI Concept</h3>
+                <p className="font-body text-dmi-gray">
+                  {selectedTemplate.dmiConcept}
+                </p>
+              </div>
+
+              {/* Game Elements */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-green-50 p-4 rounded-lg">
+                  <h4 className="font-ui font-semibold text-green-700 text-sm mb-2">🎯 Collectibles</h4>
+                  <ul className="text-sm text-green-600 space-y-1">
+                    {selectedTemplate.collectibles.slice(0, 3).map((item, i) => (
+                      <li key={i}>• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-red-50 p-4 rounded-lg">
+                  <h4 className="font-ui font-semibold text-red-700 text-sm mb-2">⚠️ Obstacles</h4>
+                  <ul className="text-sm text-red-600 space-y-1">
+                    {selectedTemplate.obstacles.slice(0, 3).map((item, i) => (
+                      <li key={i}>• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-purple-50 p-4 rounded-lg">
+                  <h4 className="font-ui font-semibold text-purple-700 text-sm mb-2">⚡ Power-ups</h4>
+                  <ul className="text-sm text-purple-600 space-y-1">
+                    {selectedTemplate.powerUps.slice(0, 3).map((item, i) => (
+                      <li key={i}>• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* Reference Games */}
+              <div>
+                <h3 className="font-ui font-semibold text-dmi-black mb-2">Similar Games</h3>
+                <div className="flex flex-wrap gap-2">
+                  {selectedTemplate.referenceGames.map((game, i) => (
+                    <span key={i} className="font-ui text-sm px-3 py-1 bg-gray-100 rounded-full text-dmi-gray">
+                      {game}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Specs */}
+              <div className="flex flex-wrap gap-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400">Difficulty:</span>
+                  <span className={`font-ui font-medium ${
+                    selectedTemplate.difficulty === 'Easy' ? 'text-green-600' :
+                    selectedTemplate.difficulty === 'Medium' ? 'text-yellow-600' :
+                    'text-red-600'
+                  }`}>
+                    {selectedTemplate.difficulty}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400">Est. Build Time:</span>
+                  <span className="font-ui font-medium text-dmi-black">
+                    {selectedTemplate.estimatedTime}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-6 border-t border-gray-100 flex gap-3">
+              <a
+                href={`/create?template=${selectedTemplate.id}`}
+                className="flex-1 btn-dmi-primary text-center"
+              >
+                Use This Template
+              </a>
+              <button
+                onClick={() => setSelectedTemplate(null)}
+                className="btn-dmi-secondary"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="bg-dmi-gray py-6">
